@@ -9,4 +9,4 @@ Prior to proceeding to the game logic, the program verifies that the user entere
 
 If a valid input is selected, the game play logic of rock, paper, scissors is evaluated to see who wins the game. The game is repeated until either the computer or the user playing the game wins three games.
 ## Game Diagram
-![Rock Paper Scissors program gameplay flow chart](../Images/4RockPaperScissorsFlowChart.png)
+![Rock Paper Scissors program gameplay flow chart](../Images/Day4-RockPaperScissorsFlow.png)
