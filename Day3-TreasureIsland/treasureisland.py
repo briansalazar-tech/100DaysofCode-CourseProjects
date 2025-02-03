@@ -33,11 +33,12 @@ if left_or_right[0] == "l":
           which_door = input("You arrive at the island unharmed. There is a house with 3 doors. One red, one yellow and one blue. Which colour do you choose?\n").lower()
           if which_door[0] == "r":
                print("You entered a room full of snakes. Game Over.")
-          
           elif which_door[0] == "y":
                print("You found the treasure! You Win!")
           elif which_door[0] == "b":
                print("The room is booby trapped. Game Over.")
+          else:
+               print("You chose a door that doesn't exist. Game Over.")
      else:
           print("You got attacked by by sharks. Game Over.")
 else:
