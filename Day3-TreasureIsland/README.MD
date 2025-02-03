@@ -1,4 +1,4 @@
-# Day 2 Project: Treasure Island CLI Game
+# Day 3 Project: Treasure Island CLI Game
 ## Topics covered in leason include
 - If/elif/else conditional statements
 - Conditional operators
