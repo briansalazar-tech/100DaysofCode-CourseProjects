@@ -1,4 +1,4 @@
-# Day 4 Project: Password Generator
+# Day 5 Project: Password Generator
 ## Topics covered in leason include
 - For Loops
 ## Project
