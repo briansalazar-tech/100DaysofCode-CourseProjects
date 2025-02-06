@@ -1,0 +1,22 @@
+word_list = [
+    "hangman",
+    "python",
+    "program",
+    "developer",
+    "function",
+    "variable",
+    "iterate",
+    "compile",
+    "execute",
+    "syntax",
+    "debugging",
+    "algorithm",
+    "library",
+    "package",
+    "framework",
+    "inheritance",
+    "polymorphism",
+    "encapsulation",
+    "abstraction",
+    "interface"
+]
