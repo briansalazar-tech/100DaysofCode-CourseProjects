@@ -9,12 +9,12 @@ def caesar(direction, original_text, shift_amount):
     if direction == "decode":
         shift_amount *= -1
 
-    for letter in original_text:
-        if letter not in alphabet:
-            print(letter)
-            output_text += letter
+    for character in original_text:
+        if character not in alphabet:
+            print(character)
+            output_text += character
         else:
-            shifted_index = alphabet.index(letter) + shift_amount
+            shifted_index = alphabet.index(character) + shift_amount
             # If shifted amount is greater than the last index of the alphabet, then index wraps around to begining
             if shifted_index > 25:
                 shifted_index = shifted_index % len(alphabet)
