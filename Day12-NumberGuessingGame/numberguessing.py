@@ -9,7 +9,7 @@ def number_guessing_game():
     print("Welcome to the Number Guessing Game!\nI'm thinking of a number between 1 and 100.")
     # Generate a random number
     random_number = random.randint(1, 100)
-    print(f"For Testing... the correct number is: {random_number}")
+    # print(f"For Testing... the correct number is: {random_number}")
     # Chose dificulty - hard (5) or easy (10)
     difficulty = input("Choose a difficulty. Type 'easy' or 'hard': ").lower()
     if difficulty == "easy":
