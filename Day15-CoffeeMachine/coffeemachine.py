@@ -1,4 +1,3 @@
-import os
 from art import logo
 from menu import menu
 
