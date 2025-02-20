@@ -65,10 +65,28 @@ def check_resources(drink_name):
     elif make_drink == False:
         print("Please try a different drink")
         return False
+    
+def subtract_resources(drink_name):
+    """Update the quantity of resources in the coffee machine."""
+
+    drink = MENU[drink_name]["ingredients"]
+    for ingredient in drink:
+        resources[ingredient] -= MENU[drink_name]["ingredients"][ingredient]
+
+
+
+def add_resources():
+    """Add additional resources to the coffee machine."""
+
+    resources["water"] += 300
+    resources["milk"] += 200
+    resources["coffee"] += 100
+    print("Water, milk, and coffee replenished.")
 
 
 def process_coins():
     """Asks user to enter money into the machine. Total value of coins is returned."""
+    
     try:
         quarters = float(input("Please enter quarters ($0.25): ")) * 0.25
         dimes = float(input("Please enter dimes ($0.10): ")) * 0.10
@@ -76,6 +94,7 @@ def process_coins():
         pennies = float(input("Please enter pennies ($0.01): ")) * 0.01
         total = quarters + dimes + nickles + pennies
         return total
+    
     except:
         print("Invalid entry. Please enter a valid quantity")
     
@@ -94,7 +113,7 @@ while machine_on:
             try: 
                 user_coins = process_coins()
                 print(user_coins)
-                # TODO Process coins
+                # TODO Process coins & Check transaction success
                 # Sufficient money entered
                 if user_coins >= MENU["cappuccino"]["cost"]:
                     # User paid extra
@@ -106,6 +125,9 @@ while machine_on:
 
                         # Continue
                         print("Sufficient")
+                        # TODO Make Coffee
+                        subtract_resources(drink_to_make)
+                        print(f"Enjoy your {drink_to_make}! ☕")
 
                 # Insufficient money
                 elif user_coins < MENU["cappuccino"]["cost"]:
@@ -120,6 +142,9 @@ while machine_on:
     # TODO Print report
     elif drink_to_make == "report":
         report()
+
+    elif drink_to_make == "add":
+        add_resources()
     
     # TODO Turn machine off
     elif drink_to_make == "off":
@@ -129,21 +154,13 @@ while machine_on:
     else:
         print("That is not a valid choice. Try again.")
 
-# print(process_coins())
-# user_coins = process_coins()
-# if user_coins >= MENU["cappuccino"]["cost"]:
-#     print(user_coins)
-#     print(MENU["cappuccino"]["cost"])
-#     print("Sufficient")
-#     if user_coins > MENU["cappuccino"]["cost"]:
-#         change = user_coins - MENU["cappuccino"]["cost"]
-#         rounded_change = "{:.2f}".format(change)
-#         money += MENU["cappuccino"]["cost"]
-#         print(f"Change due: {rounded_change}")
-# print(money)
-# print(MENU["cappuccino"]["cost"])
 
+
+# TODO Make Coffee
 # print(resources)
-# TODO Process coins
-# TODO Check transaction success
-# TODO Make Foccee
+# subtract_resources("cappuccino")
+# print("Drink has been made")
+# print(resources)
+# print("Adding resources")
+# add_resources()
+# print(resources)
