@@ -32,7 +32,7 @@ while on == "on":
                 # Transaction Successful
                 if transaction:
                     # Make Drink
-                    print(f"Enjoy your {drink_to_make} ☕")
+                    coffee_machine.make_coffee(drink)
             
             except:
                 print("Invalid entry for money.")
