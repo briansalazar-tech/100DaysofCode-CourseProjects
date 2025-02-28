@@ -8,7 +8,7 @@ user_bet = screen.textinput(title="Make your bet", prompt="Which turtle will win
 
 # Starting variables
 starting_y = -150
-colors = ["red", "orange", "yellow", "green", "blue", "purple"]
+colors = ["red", "orange", "pink", "green", "blue", "purple"]
 turtles = []
 is_race_on = False
 
