@@ -17,12 +17,20 @@ class Snake:
     def create_snake(self):
         """Generates 3 segments for the starting snake body"""
         for segment in range(3):
-            snake = Turtle(shape="square")
-            snake.color("white")
-            snake.penup()
-            snake.goto(x=self.starting_x, y =0)
-            self.starting_x -= 20
-            self.snake_body.append(snake)
+            self.add_segment()
+
+    def add_segment(self):
+        """Creates snake segment body part"""
+        snake = Turtle(shape="square")
+        snake.color("white")
+        snake.penup()
+        snake.goto(x=self.starting_x, y =0)
+        self.starting_x -= 20
+        self.snake_body.append(snake)
+
+    def extend(self):
+        """Appends a single segment to the snakes body"""
+        self.add_segment()
 
     def move(self):
         """Moves the segments in the snake body to the previous position of the leading segment"""
