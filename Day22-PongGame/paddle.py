@@ -11,9 +11,11 @@ class Paddle(Turtle):
         self.goto(start_position)
 
     def move_up(self):
+        """Moves the paddle up"""
         new_y = self.ycor() + 20
         self.goto(x=self.xcor(), y=new_y)
 
     def move_down(self):
+        """Moves the paddle down"""
         new_y = self.ycor() - 20
         self.goto(x=self.xcor(), y=new_y)
