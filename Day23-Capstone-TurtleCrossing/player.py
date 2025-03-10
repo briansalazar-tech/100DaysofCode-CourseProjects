@@ -22,5 +22,4 @@ class Player(Turtle):
     def level_up(self):
         """Returns the turtle back to the STARTING_POSITION withen FINISH_LINE_Y is crossed"""
         if self.ycor() == FINISH_LINE_Y:
-            print("Reset the turtle")
             self.goto(STARTING_POSITION)

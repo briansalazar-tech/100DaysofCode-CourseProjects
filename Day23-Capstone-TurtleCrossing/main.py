@@ -19,7 +19,6 @@ screen.onkey(key="Up", fun=player.move)
 game_is_on = True
 while game_is_on:
     time.sleep(0.1)
-
     cars.move_cars()
 
     if player.ycor() >= 280:

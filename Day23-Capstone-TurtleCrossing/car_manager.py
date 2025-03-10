@@ -29,7 +29,6 @@ class CarManager:
         """Creates a single car and appends it to the all_cars_list"""
         new_car = Car()
         self.all_cars.append(new_car)
-        print(len(self.all_cars))
 
     def move_cars(self):
         """Moves the cars in the all_cars list to the left. Once a car reaches the left side of the screen, it is respawned off screen on the right side"""
