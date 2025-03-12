@@ -32,6 +32,14 @@ class Snake:
         """Appends a single segment to the snakes body"""
         self.add_segment()
 
+    def reset(self):
+        """Resets the snake body to the starting position and size - Day 24"""
+        for segment in self.snake_body:
+            segment.goto(1000, 1000)
+        self.snake_body.clear()
+        self.create_snake()
+        self.head = self.snake_body[0]
+
     def move(self):
         """Moves the segments in the snake body to the previous position of the leading segment"""
         for segment in range(len(self.snake_body) -1, 0, -1):
