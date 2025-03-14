@@ -1,7 +1,9 @@
 import turtle
 
+total_guessed = 0
+
 screen = turtle.Screen()
-screen.title("U.S. States Game")
+screen.title(f"U.S. States Game")
 image = "./Day25-UsStatesGame/blank_states_img.gif"
 screen.addshape(image)
 turtle.shape(image)
@@ -13,5 +15,12 @@ turtle.shape(image)
 
 # turtle.onscreenclick(get_mouse_click)
 
-answer_state = screen.textinput(title="Guess the State", prompt="Guess the name of a state").title()
-turtle.mainloop()
+while True:
+    try:
+        answer_state = screen.textinput(title=f"{total_guessed}/50 States Correct", prompt="Guess the name of a state").title()
+        print(answer_state)
+        total_guessed += 1
+    except AttributeError:
+        print("Cancel/Exit button clicked")
+        break
+turtle.exitonclick()
