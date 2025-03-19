@@ -2,7 +2,10 @@ from tkinter import *
 
 
 def convert():
-    pass
+    """Convert miles input to km and display conversion"""
+    miles = user_input.get()
+    km = float(miles) * 1.60934
+    conversion_label.config(text=f"{km}")
 
 
 # Window
