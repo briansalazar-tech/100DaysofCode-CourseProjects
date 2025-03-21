@@ -12,8 +12,19 @@ LONG_BREAK_MIN = 20
 
 reps = 0
 check_marks = ""
+timer = None
 
 # ---------------------------- TIMER RESET ------------------------------- # 
+def reset_timer():
+    """Reset values when the reset value is clicked"""
+    global check_marks, reps
+    window.after_cancel(timer)
+
+    timer_label.config(text="Timer", fg=GREEN)
+    canvas.itemconfig(timer_text, text="00:00")
+    check_marks = ""
+    check_mark_label.config(text=check_marks)
+    reps = 0
 
 # ---------------------------- TIMER MECHANISM ------------------------------- # 
 def start_timer():
@@ -38,14 +49,16 @@ def start_timer():
     elif reps % 2 == 1:
         timer_label.config(text="Work", fg=GREEN)
         countdown(work_sec)
-        check_marks += "✅"
+        print("Work block")
+        if reps > 1:
+            check_marks += "✅"
     print(reps)
 
 
 # ---------------------------- COUNTDOWN MECHANISM ------------------------------- # 
 def countdown(count):
     """Performs the countdown. Minutes and seconds are displayed in the format of MM:SS"""
-    global check_marks
+    global check_marks, timer
     count_min = math.floor(count / 60)
     count_sec = count % 60
     
@@ -60,7 +73,7 @@ def countdown(count):
     canvas.itemconfig(timer_text, text=f"{count_min}:{count_sec}")
     
     if count > 0:
-        window.after(1000, countdown, count - 1)
+        timer = window.after(1000, countdown, count - 1)
     else:
         start_timer()
         check_mark_label.config(text=check_marks)
@@ -87,7 +100,7 @@ start_button = Button(text="Start", highlightthickness=0, command=start_timer)
 start_button.grid(column=0, row=2)
 
 # Reset Button
-reset_button = Button(text="Reset")
+reset_button = Button(text="Reset", highlightthickness=0, command=reset_timer)
 reset_button.grid(column=2, row=2)
 
 # Check Mark Label
