@@ -10,19 +10,42 @@ WORK_MIN = 25
 SHORT_BREAK_MIN = 5
 LONG_BREAK_MIN = 20
 
+reps = 0
+check_marks = ""
+
 # ---------------------------- TIMER RESET ------------------------------- # 
 
 # ---------------------------- TIMER MECHANISM ------------------------------- # 
 def start_timer():
     """Starts the countdown timer"""
+    global reps, check_marks
+    work_sec = WORK_MIN #* 60
+    short_break_sec = SHORT_BREAK_MIN #* 60
+    long_break_sec = LONG_BREAK_MIN #* 60
+    reps += 1
+
+    # Long break(red)
+    if reps % 8 == 0:
+        timer_label.config(text="Break", fg=RED)
+        countdown(long_break_sec)
     
-    countdown(5 * 60)
+    # Short break(pink)
+    elif reps % 2 == 0:
+        timer_label.config(text="Break", fg=PINK)
+        countdown(short_break_sec)
+   
+    # Work(green)
+    elif reps % 2 == 1:
+        timer_label.config(text="Work", fg=GREEN)
+        countdown(work_sec)
+        check_marks += "✅"
+    print(reps)
 
 
 # ---------------------------- COUNTDOWN MECHANISM ------------------------------- # 
 def countdown(count):
     """Performs the countdown. Minutes and seconds are displayed in the format of MM:SS"""
-
+    global check_marks
     count_min = math.floor(count / 60)
     count_sec = count % 60
     
@@ -31,15 +54,19 @@ def countdown(count):
         count_sec = "00"
     
     # Add a 0 in front of the number if the number < 10 (displayed as MM:S instead of MM:0S)
-    if count_sec < 10:
+    if int(count_sec) < 10:
         count_sec = "0" + str(count_sec)
 
     canvas.itemconfig(timer_text, text=f"{count_min}:{count_sec}")
+    
     if count > 0:
         window.after(1000, countdown, count - 1)
-
+    else:
+        start_timer()
+        check_mark_label.config(text=check_marks)
+    
 # ---------------------------- UI SETUP ------------------------------- #
-# window
+# Window
 window = Tk()
 window.title("Pomodoro Timer")
 window.config(padx=100, pady=50, bg=YELLOW)
@@ -64,7 +91,7 @@ reset_button = Button(text="Reset")
 reset_button.grid(column=2, row=2)
 
 # Check Mark Label
-check_mark_label = Label(text="✅", fg=GREEN, bg=YELLOW)
+check_mark_label = Label(text="", fg=GREEN, bg=YELLOW)
 check_mark_label.grid(column=1, row=3)
 
 window.mainloop()
