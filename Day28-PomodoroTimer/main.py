@@ -1,6 +1,7 @@
 from tkinter import *
 import math
-# ---------------------------- CONSTANTS ------------------------------- #
+
+# Constants and global variables
 PINK = "#e2979c"
 RED = "#e7305b"
 GREEN = "#9bdeac"
@@ -9,12 +10,11 @@ FONT_NAME = "Courier"
 WORK_MIN = 25
 SHORT_BREAK_MIN = 5
 LONG_BREAK_MIN = 20
-
 reps = 0
 check_marks = ""
 timer = None
 
-# ---------------------------- TIMER RESET ------------------------------- # 
+
 def reset_timer():
     """Reset values when the reset value is clicked"""
     global check_marks, reps
@@ -26,36 +26,34 @@ def reset_timer():
     check_mark_label.config(text=check_marks)
     reps = 0
 
-# ---------------------------- TIMER MECHANISM ------------------------------- # 
+
 def start_timer():
     """Starts the countdown timer"""
     global reps, check_marks
-    work_sec = WORK_MIN #* 60
-    short_break_sec = SHORT_BREAK_MIN #* 60
-    long_break_sec = LONG_BREAK_MIN #* 60
+    work_sec = WORK_MIN * 60
+    short_break_sec = SHORT_BREAK_MIN * 60
+    long_break_sec = LONG_BREAK_MIN * 60
     reps += 1
 
-    # Long break(red)
+    # Long break
     if reps % 8 == 0:
         timer_label.config(text="Break", fg=RED)
         countdown(long_break_sec)
     
-    # Short break(pink)
+    # Short break
     elif reps % 2 == 0:
         timer_label.config(text="Break", fg=PINK)
         countdown(short_break_sec)
    
-    # Work(green)
+    # Work
     elif reps % 2 == 1:
         timer_label.config(text="Work", fg=GREEN)
         countdown(work_sec)
         print("Work block")
         if reps > 1:
             check_marks += "✅"
-    print(reps)
 
 
-# ---------------------------- COUNTDOWN MECHANISM ------------------------------- # 
 def countdown(count):
     """Performs the countdown. Minutes and seconds are displayed in the format of MM:SS"""
     global check_marks, timer
@@ -77,8 +75,8 @@ def countdown(count):
     else:
         start_timer()
         check_mark_label.config(text=check_marks)
-    
-# ---------------------------- UI SETUP ------------------------------- #
+
+
 # Window
 window = Tk()
 window.title("Pomodoro Timer")
@@ -106,5 +104,6 @@ reset_button.grid(column=2, row=2)
 # Check Mark Label
 check_mark_label = Label(text="", fg=GREEN, bg=YELLOW)
 check_mark_label.grid(column=1, row=3)
+
 
 window.mainloop()
