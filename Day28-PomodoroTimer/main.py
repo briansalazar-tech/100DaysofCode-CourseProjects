@@ -65,7 +65,7 @@ def countdown(count):
         count_sec = "00"
     
     # Add a 0 in front of the number if the number < 10 (displayed as MM:S instead of MM:0S)
-    if int(count_sec) < 10:
+    elif int(count_sec) < 10:
         count_sec = "0" + str(count_sec)
 
     canvas.itemconfig(timer_text, text=f"{count_min}:{count_sec}")
