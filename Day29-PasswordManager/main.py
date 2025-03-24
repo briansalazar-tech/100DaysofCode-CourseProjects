@@ -1,4 +1,5 @@
 from tkinter import *
+from tkinter import messagebox
 # ---------------------------- PASSWORD GENERATOR ------------------------------- #
 
 # ---------------------------- SAVE PASSWORD ------------------------------- #
@@ -10,17 +11,27 @@ def save():
     web = website_entry.get()
     user = username_entry.get()
     password = password_entry.get()
-    # Write data to a text file
-    with open("./Day29-PasswordManager/data.txt", mode="a") as data:
-        data.write(f"Website: {web} | Username: {user} | Password: {password}\n")
-    
-    # Clear & reset entry fields
-    website_entry.delete(first=0, last=END)
-    username_entry.delete(first=0, last=END)
-    username_entry.insert(END, "username@example.com")
-    password_entry.delete(first=0, last=END)
 
-    print("Data written to data.txt and entry fields reset to defaults")
+    # Check and make sure that entry fields are not empty
+    if len(web) == 0 or len(password) == 0 or len(user) == 0:
+        messagebox.showwarning(title="Missing data", message="Required data is missing!\nMake sure website, username, and password fields are not empty.")
+    
+    else:
+        # Ask user if they are okay with data provided
+        save = messagebox.askokcancel(title=web, message=f"Details provided:\nWebsite: {web}\nUsername: {user}\nPassword: {password}")
+        if save:
+            # Write data to a text file
+            with open("./Day29-PasswordManager/data.txt", mode="a") as data:
+                data.write(f"Website: {web} | Username: {user} | Password: {password}\n")
+            
+            # Clear & reset entry fields
+            website_entry.delete(first=0, last=END)
+            username_entry.delete(first=0, last=END)
+            username_entry.insert(END, "username@example.com")
+            password_entry.delete(first=0, last=END)
+
+            print("Data written to data.txt and entry fields reset to defaults")
+            messagebox.showinfo(title="Success", message="Password saved to data.txt file")
 
 # ---------------------------- UI SETUP ------------------------------- #
 # Window
