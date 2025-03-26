@@ -1,4 +1,5 @@
 import pyperclip
+import json
 from tkinter import *
 from tkinter import messagebox
 from random import choice, randint, shuffle
@@ -40,27 +41,43 @@ def save():
     web = website_entry.get()
     user = username_entry.get()
     password = password_entry.get()
+    saved_site = {
+        web: {
+            "email": user,
+            "password": password
+            }
+        }
 
     # Check and make sure that entry fields are not empty
     if len(web) == 0 or len(password) == 0 or len(user) == 0:
         messagebox.showwarning(title="Missing data", message="Required data is missing!\nMake sure website, username, and password fields are not empty.")
     
     else:
-        # Ask user if they are okay with data provided
-        save = messagebox.askokcancel(title=web, message=f"Details provided:\nWebsite: {web}\nUsername: {user}\nPassword: {password}")
-        if save:
-            # Write data to a text file
-            with open("./Day29-PasswordManager/data.txt", mode="a") as data:
-                data.write(f"Website: {web} | Username: {user} | Password: {password}\n")
-            
+        try:
+            with open("./Day30-PasswordManager2.0/data.json", mode="r") as data_file:
+                # Read old data
+                data = json.load(data_file)
+
+        except FileNotFoundError:
+            with open("./Day30-PasswordManager2.0/data.json", mode="w") as data_file:
+                json.dump(saved_site, data_file, indent=4)
+
+        else:
+            # Update old data with new data
+            data.update(saved_site)
+            with open("./Day30-PasswordManager2.0/data.json", mode="w") as data_file:
+                # Saving updated data
+                json.dump(data, data_file, indent=4)
+
+        finally:
             # Clear & reset entry fields
             website_entry.delete(first=0, last=END)
             username_entry.delete(first=0, last=END)
             username_entry.insert(END, "username@example.com")
             password_entry.delete(first=0, last=END)
 
-            print("Data written to data.txt and entry fields reset to defaults")
-            messagebox.showinfo(title="Success", message="Password saved to data.txt file")
+        print("Data written to data.json and entry fields reset to defaults")
+        messagebox.showinfo(title="Success", message="Password saved to data.json file")
 
 # ---------------------------- UI SETUP ------------------------------- #
 # Window
