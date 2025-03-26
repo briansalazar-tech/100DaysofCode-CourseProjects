@@ -1,18 +1,14 @@
 {
-    "test": {
-        "email": "username@example.com",
-        "password": "test"
-    },
-    "Test2": {
-        "email": "username@example.com",
-        "password": "y8$RP#E+7KdacK"
-    },
-    "Web": {
-        "email": "username@example.com",
-        "password": "+R69OQKQZAI%51"
-    },
     "Amazon": {
         "email": "username@example.com",
-        "password": "p)Fg+BKNATo0J8"
+        "password": "Lt8uObIzb$0Bk#2"
+    },
+    "Facebook": {
+        "email": "username@example.com",
+        "password": "pFlor2$L5d%a1&"
+    },
+    "Ebay": {
+        "email": "username@example.com",
+        "password": "YCA1T73!VSs(Z"
     }
 }

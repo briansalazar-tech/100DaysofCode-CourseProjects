@@ -38,7 +38,7 @@ def save():
     Entry fields are reset to default values after data is added."""
 
     # Get entry box values and save them to variable for readability
-    web = website_entry.get()
+    web = website_entry.get().title()
     user = username_entry.get()
     password = password_entry.get()
     saved_site = {
@@ -58,7 +58,7 @@ def save():
                 # Read old data
                 data = json.load(data_file)
 
-        except FileNotFoundError:
+        except:
             with open("./Day30-PasswordManager2.0/data.json", mode="w") as data_file:
                 json.dump(saved_site, data_file, indent=4)
 
@@ -79,6 +79,21 @@ def save():
         print("Data written to data.json and entry fields reset to defaults")
         messagebox.showinfo(title="Success", message="Password saved to data.json file")
 
+# ---------------------------- FIND PASSWORD ------------------------------- #
+def search():
+    """Retrives a saved password. If json file has not previously been created, user is informed via error. If website does not exist in file, user is informed website has not been saved previously."""
+    website = website_entry.get().title()
+    try:
+        with open("./Day30-PasswordManager2.0/data.json", mode="r") as data_file:
+            data = json.load(data_file)
+            try:
+                result = data[website]
+                print(result['password'])
+                messagebox.showinfo(title="Results Details", message=f"Website: {website}\nUsername: {result["email"]}\nPassword: {result["password"]}")
+            except:
+                messagebox.showinfo(title="Result Details", message= "No details for the website exist.")
+    except:
+        messagebox.showerror(title="Data does not exist", message="Data file not found. Add entry to create data file.")
 # ---------------------------- UI SETUP ------------------------------- #
 # Window
 window = Tk()
@@ -96,9 +111,13 @@ website_label = Label(text="Website:")
 website_label.grid(column=0, row=1)
 
 # Website entry
-website_entry = Entry(width=35)
-website_entry.grid(column=1, row=1, columnspan=2)
+website_entry = Entry(width=25)
+website_entry.grid(column=1, row=1)
 website_entry.focus()
+
+# Search button
+search_button = Button(text="Seach",  width=7, command=search)
+search_button.grid(column=2, row=1)
 
 # Username label
 username_label = Label(text="Email/Username:")
