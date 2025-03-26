@@ -1,0 +1,7 @@
+Website: Some Website 1 | Username: username@somewebsite.com | Password: password1
+Website: Second Site | Username: username@secondsite.com | Password: Password2
+Website: Facebook | Username: username@facebook.com | Password: Password1
+Website: test | Username: username@example.com | Password: test
+Website: test | Username: username@example.com | Password: test
+Website: test | Username: username@example.com | Password: test
+Website: test | Username: username@example.com | Password: test
