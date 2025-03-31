@@ -11,43 +11,38 @@ current_card = {}
 CSV_DATA = pandas.read_csv(FOLDER_PATH + "/data/french_words.csv")
 try:
     with open(FOLDER_PATH + "/data/words_to_learn.csv", mode="r") as data:
-        #print("Words_to_learn found")
+        print("Words_to_learn.csv found")
         CSV_DATA = pandas.read_csv(FOLDER_PATH + "/data/words_to_learn.csv")
 except:
-    #print("words_to_learn.csv does not exist. Using starting french_words.csv")
+    print("words_to_learn.csv does not exist. Using starting french_words.csv")
     CSV_DATA = pandas.read_csv(FOLDER_PATH + "/data/french_words.csv")
-
 CSV_DICT = pandas.DataFrame.to_dict(CSV_DATA, orient="records")
-# print(choice(csv_dict))
-print(len(CSV_DICT))
-
 
 
 ## FUNCTIONS ##
 def next_card():
-    """"""
+    """Calls a random card from the cards dictionary. Entry displays the French key to start. After 3 seconds, flip_card is called to show English translation."""
     global current_card, flip_timer
     window.after_cancel(flip_timer)
     current_card = choice(CSV_DICT)
-    #print(CSV_DICT[current_card])
-    print(current_card)
     canvas.itemconfig(canvas_image, image=card_image_front)
     canvas.itemconfig(language_text, text="French", fill="black")
     canvas.itemconfig(word_text, text=current_card["French"], fill="black")
 
     flip_timer = window.after(3000, flip_card)
 
+
 def flip_card():
-    """"""
+    """Flips the dictionary entry to display the English key."""
     global current_card
     canvas.itemconfig(canvas_image, image=card_image_back)
     canvas.itemconfig(language_text, text="English", fill="white")
     canvas.itemconfig(word_text, text=current_card["English"], fill="white")
 
+
 def correct_answer():
-    """"""
+    """If card is known, current card is removed from the list of cards. Next_card is called to pull up the next flash card."""
     CSV_DICT.remove(current_card)    
-    print(len(CSV_DICT))
     next_card()
 
 ## UI SETUP ##
@@ -77,6 +72,7 @@ correct_image = PhotoImage(file=FOLDER_PATH + "/images/right.png")
 correct_button = Button(image=correct_image, highlightthickness=0, command=correct_answer)
 correct_button.grid(column=1, row=1)
 
+# Calls initial card
 next_card()
 
 window.mainloop()
@@ -84,4 +80,4 @@ window.mainloop()
 # Create new CSV of words to learn
 words_to_learn_df = pandas.DataFrame(CSV_DICT)
 words_to_learn_df.to_csv(FOLDER_PATH + "/data/words_to_learn.csv", index=False)
-print("DF created")
+print("Words_to_learn.csv created/updated")
