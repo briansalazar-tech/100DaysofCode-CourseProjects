@@ -9,8 +9,18 @@ current_card = {}
 
 # Word Bank Data
 CSV_DATA = pandas.read_csv(FOLDER_PATH + "/data/french_words.csv")
+try:
+    with open(FOLDER_PATH + "/data/words_to_learn.csv", mode="r") as data:
+        #print("Words_to_learn found")
+        CSV_DATA = pandas.read_csv(FOLDER_PATH + "/data/words_to_learn.csv")
+except:
+    #print("words_to_learn.csv does not exist. Using starting french_words.csv")
+    CSV_DATA = pandas.read_csv(FOLDER_PATH + "/data/french_words.csv")
+
 CSV_DICT = pandas.DataFrame.to_dict(CSV_DATA, orient="records")
 # print(choice(csv_dict))
+print(len(CSV_DICT))
+
 
 
 ## FUNCTIONS ##
@@ -19,6 +29,7 @@ def next_card():
     global current_card, flip_timer
     window.after_cancel(flip_timer)
     current_card = choice(CSV_DICT)
+    #print(CSV_DICT[current_card])
     print(current_card)
     canvas.itemconfig(canvas_image, image=card_image_front)
     canvas.itemconfig(language_text, text="French", fill="black")
@@ -32,6 +43,12 @@ def flip_card():
     canvas.itemconfig(canvas_image, image=card_image_back)
     canvas.itemconfig(language_text, text="English", fill="white")
     canvas.itemconfig(word_text, text=current_card["English"], fill="white")
+
+def correct_answer():
+    """"""
+    CSV_DICT.remove(current_card)    
+    print(len(CSV_DICT))
+    next_card()
 
 ## UI SETUP ##
 # Window
@@ -57,9 +74,14 @@ incorrect_button.grid(column=0, row=1)
 
 # Correct Button
 correct_image = PhotoImage(file=FOLDER_PATH + "/images/right.png")
-correct_button = Button(image=correct_image, highlightthickness=0, command=next_card)
+correct_button = Button(image=correct_image, highlightthickness=0, command=correct_answer)
 correct_button.grid(column=1, row=1)
 
 next_card()
 
 window.mainloop()
+
+# Create new CSV of words to learn
+words_to_learn_df = pandas.DataFrame(CSV_DICT)
+words_to_learn_df.to_csv(FOLDER_PATH + "/data/words_to_learn.csv", index=False)
+print("DF created")
