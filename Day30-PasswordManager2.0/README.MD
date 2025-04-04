@@ -50,4 +50,4 @@ If the user searches for a credential **and the file exists**, the user will rec
 The password manager program has an additional feature of generating a strong secure password for the user. By default, the user can enter any password they want to use in the password field. Even passwords that are not strong. When the **Generate** button is clicked, a randomized password is created (utilizing the code from **day 5** of the 100 days of code course). The password that is generated is then populated into the Password box. In addition, the password is also copied to the user’s clipboard (**Pyperclip**) allowing them to use the password if they were signing up for a new account!
 
 ### Project Flowchart
-![Password Manager flowchart](../Images/Day-30-PWManager2.0Flow.png)
+![Password Manager flowchart](../Images/Day30-PWManager2.0Flow.png)
