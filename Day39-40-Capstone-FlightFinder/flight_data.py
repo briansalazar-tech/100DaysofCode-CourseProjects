@@ -5,17 +5,17 @@ class FlightData:
         self.date_of_departure = None
         self.date_of_return = None
         self.average_price = 0
+        self.sum_of_prices = 0
         self.highest_price = 0
         self.entries = 0
 
     def parse_flight_data(self, data):
         for entry in data["data"]:
 
-            sum_of_prices = 0
-            sum_of_prices += float(entry["price"]["total"])
+            self.sum_of_prices += float(entry["price"]["total"])
             self.entries += 1
             
-            self.average_price = sum_of_prices / self.entries
+            self.average_price = self.sum_of_prices / self.entries
 
             if float(entry["price"]["total"]) > self.highest_price:
                 self.highest_price = float(entry["price"]["total"])

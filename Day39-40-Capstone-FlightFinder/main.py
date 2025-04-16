@@ -1,7 +1,5 @@
 #This file will need to use the DataManager,FlightSearch, FlightData, NotificationManager classes to achieve the program requirements.
 ## Requirements ##
-# Use Flight Search API to check the cheapest flight from tomorrow to 6 months later for all cities in google sheet
-# If price is lower than lowest price in googlee sheet, send email using SMTPlib
 # Message should include the departure airport IATA COde, destination airport IATA code, flight price and flight dates
 
 
@@ -11,11 +9,14 @@ import time
 from data_manager import DataManager
 from flight_search import FlightSearch
 from flight_data import FlightData
+from notification_manager import NotificationManager
 from pprint import pprint
 from datetime import datetime, timedelta
 from dotenv import load_dotenv
 
 load_dotenv()
+
+origin_city = os.getenv("ORIGIN_CITY")
 
 # spreadsheet_data = DataManager()
 # flight_search = FlightSearch()
@@ -78,10 +79,10 @@ ret_date = one_week_dif.strftime("%Y-%m-%d")
 
 # print(flights_results)
 
-test = [{'destination': 'Los Angeles', 'lowest_price': 202.6, 'departure_datetime': '2025-05-16 at 19:38:00', 'return_datetime': '2025-05-23T23:32:00', 'average_price': 42.73, 'highest_price': 512.74}, 
-        {'destination': 'Las Vegas', 'lowest_price': 107.96, 'departure_datetime': '2025-05-16 at 20:13:00', 'return_datetime': '2025-05-23T19:16:00', 'average_price': 23.21, 'highest_price': 116.04}, 
-        {'destination': 'San Francisco', 'lowest_price': 278.94, 'departure_datetime': '2025-05-16 at 06:00:00', 'return_datetime': '2025-05-23T23:48:00', 'average_price': 16.21, 'highest_price': 388.97}, 
-        {'destination': 'Chicago', 'lowest_price': 597.98, 'departure_datetime': '2025-05-16 at 07:05:00', 'return_datetime': '2025-05-23T22:27:00', 'average_price': 597.98, 'highest_price': 597.98}, 
+test = [{'destination': 'Los Angeles', 'lowest_price': 202.6, 'departure_datetime': '2025-05-16 at 19:38:00', 'return_datetime': '2025-05-23 at 23:32:00', 'average_price': 42.73, 'highest_price': 512.74}, 
+        {'destination': 'Las Vegas', 'lowest_price': 107.96, 'departure_datetime': '2025-05-16 at 20:13:00', 'return_datetime': '2025-05-23 at 19:16:00', 'average_price': 23.21, 'highest_price': 116.04}, 
+        {'destination': 'San Francisco', 'lowest_price': 278.94, 'departure_datetime': '2025-05-16 at 06:00:00', 'return_datetime': '2025-05-23 at 23:48:00', 'average_price': 16.21, 'highest_price': 388.97}, 
+        {'destination': 'Chicago', 'lowest_price': 597.98, 'departure_datetime': '2025-05-16 at 07:05:00', 'return_datetime': '2025-05-23 at 22:27:00', 'average_price': 597.98, 'highest_price': 597.98}, 
         {'destination': 'New York', 'lowest_price': 10000, 'departure_datetime': 'No results found', 'return_datetime': None, 'average_price': 0, 'highest_price': 0}, 
         {'destination': 'Boston', 'lowest_price': 10000, 'departure_datetime': 'No results found', 'return_datetime': None, 'average_price': 0, 'highest_price': 0}, 
         {'destination': 'San Diego', 'lowest_price': 10000, 'departure_datetime': 'No results found', 'return_datetime': None, 'average_price': 0, 'highest_price': 0}, 
@@ -94,11 +95,13 @@ for city in flight_deals_data["prices"]:
     city_name = city["city"]
     for flight in test:
         if flight["destination"] == city_name and flight["lowest_price"] < city["lowestPrice"]:
+            email_manager = NotificationManager()
             # body = ""
-            body = f"Flight Deal Found!\nFlight to {flight["destination"]} found for a price of ${flight["lowest_price"]} which is lower than the set threshold of ${city["lowestPrice"]}.\n"
+            body = f"Flight Deal Found!\nFlight to {flight["destination"]} from {origin_city} found for a price of ${flight["lowest_price"]} which is lower than the set threshold of ${city["lowestPrice"]}.\n"
             body += f"Departure Date & Time: {flight["departure_datetime"]}\nReturn Date & Time: {flight["return_datetime"]}\n"
-            body += f"Other Query Data:\n\tDeparture/return dates: {dep_date}\{ret_date}\n\tAverage Price: ${flight["average_price"]}\n\tHighest Price: ${flight["highest_price"]}"
-            print(body)
+            body += f"Other Query Data:\n\tDeparture & return dates: {dep_date} & {ret_date}\n\tAverage Price: ${flight["average_price"]}\n\tHighest Price: ${flight["highest_price"]}"
+            # print(body)
+            email_manager.send_email(message=body)
 
 
 # Send email if lowest price lower than data in spreadsheet
