@@ -7,10 +7,10 @@ load_dotenv()
 TOKEN_ENDPOINT = os.getenv("AMADEUS_TOKEN_ENDPOINT")
 FLIGHT_SEARCH_ENDPOINT = os.getenv("AMADEUS_SEARCH_ENDPOINT")
 
+
 class FlightSearch:
     #This class is responsible for talking to the Flight Search API.
     def __init__(self):
-
         self._api_key = os.getenv("AMADEUS_KEY")
         self._api_secret = os.getenv("AMADEUS_SECRET")
         self._token = self._get_new_token()
@@ -28,15 +28,20 @@ class FlightSearch:
             "client_secret": self._api_secret,
         }
 
-        response = requests.post(url=TOKEN_ENDPOINT, 
-                                 headers=header, 
-                                 data=body)
+        response = requests.post(
+            url=TOKEN_ENDPOINT, 
+            headers=header, 
+            data=body
+            )
+        
         response.raise_for_status()
         token = response.json()["access_token"]
-        print(f"Generated Token is: {token}")
+        
         return token
 
+
     def get_iata_code(self, city_name):
+        """Returns the IATA code for the given city name. Bearer token must first be obtained to use API endpoint."""
         header = {
             "Authorization": f"Bearer {self._token}",
         }
@@ -47,14 +52,21 @@ class FlightSearch:
             "max": 1,
         }
 
-        response = requests.get(url="https://test.api.amadeus.com/v1/reference-data/locations/cities", headers=header, params=parameters)
+        response = requests.get(
+            url="https://test.api.amadeus.com/v1/reference-data/locations/cities", 
+            headers=header, 
+            params=parameters
+            )
+        
         response.raise_for_status()
         response_json = response.json()
         iatacode = response_json["data"][0]["iataCode"]
+        
         return iatacode
     
 
     def get_flight_data(self, destination, departure_date, return_date):
+        """Returns flight data for the given destination, departure date, and return date. Bearer token must first be obtained to use the API endpoint"""
         header = {
             "Authorization": f"Bearer {self._token}",
         }
@@ -67,7 +79,7 @@ class FlightSearch:
             "adults": 1,
             "nonStop": "true",
             "currencyCode": "USD",
-            "max": 50,
+            "max": 50, # Limites the number of results returned
         }
 
         response = requests.get(
@@ -75,8 +87,8 @@ class FlightSearch:
             headers=header,
             params=body,
         )
+
         response.raise_for_status()
         flight_data = response.json()
 
-        # print(flight_data)
         return flight_data

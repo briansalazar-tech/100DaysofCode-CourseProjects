@@ -4,7 +4,9 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
+
 class NotificationManager:
+
     #This class is responsible for sending notifications with the deal flight details.
     def __init__(self):
         self.email = os.getenv("TEST_EMAIL")
@@ -12,8 +14,10 @@ class NotificationManager:
         self.to_address = os.getenv("TEST_EMAIL")
         self.subject = "Low Price Alert!! Flight Deal Found! ✈️"
 
+
     def send_email(self, message):
-        print("Sending email...")
+        """Takes a formatted message and sends an email to the to_address specified in the envirnemnt variable."""
+        print("Deal found. Sending email...")
         with smtplib.SMTP("smtp.gmail.com") as connection:
             connection.starttls()
             connection.login(user=self.email, password=self.password)
