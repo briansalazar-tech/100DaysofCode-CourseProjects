@@ -28,7 +28,7 @@ class FlightData:
         # Format the date strings
         try:
             self.date_of_departure = self.date_of_departure.replace("T", " at ")
-            self.date_of_departure = self.date_of_departure.replace("T", " at ")
+            self.date_of_departure = self.date_of_return.replace("T", " at ")
         except:
             self.date_of_departure = "No results found"
             self.date_of_departure = "No results found"
