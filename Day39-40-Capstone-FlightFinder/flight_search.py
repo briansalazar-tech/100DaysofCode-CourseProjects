@@ -5,6 +5,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 TOKEN_ENDPOINT = os.getenv("AMADEUS_TOKEN_ENDPOINT")
+FLIGHT_SEARCH_ENDPOINT = os.getenv("AMADEUS_SEARCH_ENDPOINT")
 
 class FlightSearch:
     #This class is responsible for talking to the Flight Search API.
@@ -51,3 +52,31 @@ class FlightSearch:
         response_json = response.json()
         iatacode = response_json["data"][0]["iataCode"]
         return iatacode
+    
+
+    def get_flight_data(self, destination, departure_date, return_date):
+        header = {
+            "Authorization": f"Bearer {self._token}",
+        }
+
+        body = {
+            "originLocationCode": os.getenv("ORIGIN_IATA"),
+            "destinationLocationCode": destination,
+            "departureDate": departure_date,
+            "returnDate": return_date,
+            "adults": 1,
+            "nonStop": "true",
+            "currencyCode": "USD",
+            "max": 50,
+        }
+
+        response = requests.get(
+            url=FLIGHT_SEARCH_ENDPOINT,
+            headers=header,
+            params=body,
+        )
+        response.raise_for_status()
+        flight_data = response.json()
+
+        # print(flight_data)
+        return flight_data
