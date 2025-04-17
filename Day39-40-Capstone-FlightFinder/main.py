@@ -13,7 +13,7 @@ origin_city = os.getenv("ORIGIN_CITY")
 
 spreadsheet_data = DataManager()
 flight_search = FlightSearch()
-
+print("Connecting to Google Sheets...")
 ## Populate the Google Sheet with IATA codes for each city
 for entry in range(len(spreadsheet_data.data["prices"])):
     if spreadsheet_data.data["prices"][entry]["iataCode"] == "":
@@ -49,7 +49,10 @@ for entry in flight_deals_data["prices"]:
     print(f"Searching flights to: {city}")
     search_return = flight_search.get_flight_data(destination=destination_iata, departure_date=dep_date, return_date=ret_date)
     parsed_data = flight_data.parse_flight_data(data=search_return)
-    
+    if parsed_data[0] == 10000:
+        print(f"No direct flights found to {city}. Searching for flights with layovers...")
+        modified_search = flight_search.get_flight_data(destination=destination_iata, departure_date=dep_date, return_date=ret_date, is_direct=False)
+        parsed_data = flight_data.parse_flight_data(data=modified_search)
     dict_data = {
         "destination": city,
         "lowest_price": round(parsed_data[0], 2),
@@ -57,6 +60,8 @@ for entry in flight_deals_data["prices"]:
         "return_datetime": parsed_data[2],
         "average_price": round(parsed_data[3], 2),
         "highest_price": round(parsed_data[4], 2),
+        "destination_layovers": parsed_data[5],
+        "return_layovers": parsed_data[6]
     }
 
     flights_results.append(dict_data)
@@ -70,8 +75,9 @@ for city in flight_deals_data["prices"]:
 
         # Send email if deal found
         if flight["destination"] == city_name and flight["lowest_price"] < city["lowestPrice"]:
-            email_manager = NotificationManager()
+            email_manager = NotificationManager(city=city_name)
             body = f"Flight Deal Found!\nFlight to {flight["destination"]} from {origin_city} found for a price of ${flight["lowest_price"]} which is lower than the set threshold of ${city["lowestPrice"]}.\n"
             body += f"Departure Date & Time: {flight["departure_datetime"]}\nReturn Date & Time: {flight["return_datetime"]}\n"
-            body += f"Other Query Data:\n\tDeparture & return dates: {dep_date} & {ret_date}\n\tAverage Price: ${flight["average_price"]}\n\tHighest Price: ${flight["highest_price"]}"
+            body += f"Other Query Data:\n\tDeparture & return dates: {dep_date} & {ret_date}\n\tAverage Price: ${flight["average_price"]}\n\tHighest Price: ${flight["highest_price"]}\n"
+            body += f"\tLayovers to the destination: {flight["destination_layovers"]}\n\tLayovers on the return: {flight["return_layovers"]}"
             email_manager.send_email(message=body)

@@ -65,7 +65,7 @@ class FlightSearch:
         return iatacode
     
 
-    def get_flight_data(self, destination, departure_date, return_date):
+    def get_flight_data(self, destination, departure_date, return_date, is_direct=True):
         """Returns flight data for the given destination, departure date, and return date. Bearer token must first be obtained to use the API endpoint"""
         header = {
             "Authorization": f"Bearer {self._token}",
@@ -77,7 +77,7 @@ class FlightSearch:
             "departureDate": departure_date,
             "returnDate": return_date,
             "adults": 1,
-            "nonStop": "true",
+            "nonStop": "true" if is_direct else "false",
             "currencyCode": "USD",
             "max": 50, # Limites the number of results returned
         }
@@ -90,5 +90,8 @@ class FlightSearch:
 
         response.raise_for_status()
         flight_data = response.json()
-
+        # print(flight_data)
         return flight_data
+    
+
+# FlightSearch().get_flight_data(destination="ATL", departure_date="2025-04-18", return_date="2025-04-25", is_direct=False)

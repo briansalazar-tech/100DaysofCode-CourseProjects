@@ -9,7 +9,8 @@ class FlightData:
         self.sum_of_prices = 0
         self.highest_price = 0
         self.entries = 0
-
+        self.to_stops = 0 # Layovers to destination
+        self.return_stops = 0 # Layovers to return
 
     def parse_flight_data(self, data):
         """
@@ -30,7 +31,10 @@ class FlightData:
                 self.lowest_price = float(entry["price"]["total"])
                 self.date_of_departure = entry["itineraries"][0]["segments"][0]["departure"]["at"] # Departure date/time
                 self.date_of_return = entry["itineraries"][1]["segments"][0]["arrival"]["at"] # Return date/time
-        
+            # Get nummber of stops
+            self.to_stops = len(entry["itineraries"][0]["segments"]) - 1
+            self.return_stops = len(entry["itineraries"][0]["segments"]) - 1
+
         # Format the date strings. Some dates may not have flights so departure/return dates will not be returned
         try:
             self.date_of_departure = self.date_of_departure.replace("T", " at ")
@@ -40,4 +44,4 @@ class FlightData:
             self.date_of_departure = "No results found"
             self.date_of_departure = "No results found"
 
-        return (self.lowest_price, self.date_of_departure, self.date_of_return, self.average_price, self.highest_price)
+        return (self.lowest_price, self.date_of_departure, self.date_of_return, self.average_price, self.highest_price, self.to_stops, self.return_stops)
