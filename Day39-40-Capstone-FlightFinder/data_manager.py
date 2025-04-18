@@ -39,6 +39,7 @@ class DataManager:
             emails.append(user["enterYourEmail"])
         return emails
 
+
     def set_iata_code(self, iata_code, row_id):
         """Sets IATA code in the GOogle Sheet for the given row ID. Data attribute is updated with the new data."""
         endpoint = f"{self.sheetly_price_endpoint}/{row_id}"
@@ -57,17 +58,3 @@ class DataManager:
         self.get_data()
         
         print("IATA code updated to: " + iata_code)
-
-
-# datamanager = DataManager()
-# emails = datamanager.get_customer_emails()
-
-# print(emails)
-
-# test = {'users': [{'timestamp': '4/17/2025 10:20:12', 'enterYourFirstName': 'Brian', 'enterYourLastName': 'Salazar', 'enterYourEmail': 'briansalazar5@gmail.com', 'id': 2}, {'timestamp': '4/18/2025 9:02:50', 'enterYourFirstName': 'Brian', 'enterYourLastName': 'Salazar', 'enterYourEmail': 'bstestndev@gmail.com', 'id': 3}]}
-
-# emails = []
-# for user in test["users"]:
-#     emails.append(user["enterYourEmail"])
-# print(emails)
-# print(test["users"][0]["enterYourEmail"])#

@@ -16,14 +16,14 @@ class NotificationManager:
         self.subject = f"Low Price Alert!! Flight Deal Found to {self.destination}! ✈️"
 
 
-    def send_email(self, message):
+    def send_email(self, message, recipient):
         """Takes a formatted message and sends an email to the to_address specified in the envirnemnt variable."""
         print(f"Deal to {self.destination} found. Sending email...")
         with smtplib.SMTP("smtp.gmail.com") as connection:
             connection.starttls()
             connection.login(user=self.email, password=self.password)
             connection.sendmail(from_addr=self.email,
-                                to_addrs=self.to_address,
+                                to_addrs=recipient,
                                 msg=f"Subject:{self.subject}\n\n{message}".encode("utf-8")
                                 )
         print("Email Sent!")

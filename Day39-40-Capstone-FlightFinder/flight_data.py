@@ -12,6 +12,7 @@ class FlightData:
         self.to_stops = 0 # Layovers to destination
         self.return_stops = 0 # Layovers to return
 
+
     def parse_flight_data(self, data):
         """
         Takes data from the flight search API and parses the JSON data to find the lowest price, departure date, return date, average price, and highest price.

@@ -51,6 +51,7 @@ for entry in flight_deals_data["prices"]:
     parsed_data = flight_data.parse_flight_data(data=search_return)
     if parsed_data[0] == 10000:
         print(f"No direct flights found to {city}. Searching for flights with layovers...")
+        time.sleep(2) # Avoid API rate limit
         modified_search = flight_search.get_flight_data(destination=destination_iata, departure_date=dep_date, return_date=ret_date, is_direct=False)
         parsed_data = flight_data.parse_flight_data(data=modified_search)
     dict_data = {
@@ -83,4 +84,5 @@ for city in flight_deals_data["prices"]:
             body += f"Departure Date & Time: {flight["departure_datetime"]}\nReturn Date & Time: {flight["return_datetime"]}\n"
             body += f"Other Query Data:\n\tDeparture & return dates: {dep_date} & {ret_date}\n\tAverage Price: ${flight["average_price"]}\n\tHighest Price: ${flight["highest_price"]}\n"
             body += f"\tLayovers to the destination: {flight["destination_layovers"]}\n\tLayovers on the return: {flight["return_layovers"]}"
-            email_manager.send_email(message=body)
+            for email_address in emails:
+                email_manager.send_email(message=body, recipient=email_address)
