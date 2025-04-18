@@ -90,8 +90,4 @@ class FlightSearch:
 
         response.raise_for_status()
         flight_data = response.json()
-        # print(flight_data)
         return flight_data
-    
-
-# FlightSearch().get_flight_data(destination="ATL", departure_date="2025-04-18", return_date="2025-04-25", is_direct=False)

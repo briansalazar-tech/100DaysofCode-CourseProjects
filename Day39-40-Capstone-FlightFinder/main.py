@@ -15,9 +15,9 @@ spreadsheet_data = DataManager()
 flight_search = FlightSearch()
 print("Connecting to Google Sheets...")
 ## Populate the Google Sheet with IATA codes for each city
-for entry in range(len(spreadsheet_data.data["prices"])):
-    if spreadsheet_data.data["prices"][entry]["iataCode"] == "":
-        city = spreadsheet_data.data["prices"][entry]["city"]
+for entry in range(len(spreadsheet_data.price_data["prices"])):
+    if spreadsheet_data.price_data["prices"][entry]["iataCode"] == "":
+        city = spreadsheet_data.price_data["prices"][entry]["city"]
         iata_code = flight_search.get_iata_code(city)
         row_id = entry + 2
 
@@ -27,7 +27,7 @@ print("Flight-Deals spreadsheet populated with IATA codes")
 
 ## Retreive Google Sheet data
 print("Retreiving flight deals data from spreadsheet...")
-flight_deals_data = spreadsheet_data.data
+flight_deals_data = spreadsheet_data.price_data
 
 ## Get flight data from API call
 month_away = datetime.now() + timedelta(days=30) # Departure date is 30 days from now
@@ -66,6 +66,9 @@ for entry in flight_deals_data["prices"]:
 
     flights_results.append(dict_data)
     time.sleep(2)
+
+# Get list of customer emails from Google Sheet
+emails = spreadsheet_data.get_customer_emails()
 
 ## Compare flight-deals prices with query prices and send email if deal found
 print("Comparing flight prices with spreadsheet data to see if deal is found...")

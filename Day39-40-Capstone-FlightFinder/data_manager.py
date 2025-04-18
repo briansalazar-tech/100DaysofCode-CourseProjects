@@ -9,8 +9,10 @@ class DataManager:
 
     #This class is responsible for talking to the Google Sheet.
     def __init__(self):
-        self.data = {} # Data from the Google Sheet
-        self.sheetly_endpoint = os.getenv("SHEETLY_FLIGHTDEALS_ENDPOINT")
+        self.price_data = {} # Price data from the Google Sheet
+        self.user_data = {} # User data from Google Sheet
+        self.sheetly_price_endpoint = os.getenv("SHEETLY_FLIGHTDEALS_PRICES_ENDPOINT")
+        self.sheetly_user_endpoint = os.getenv("SHEETLY_FLIGHTSDEALS_USERS_ENDPOINT")
         self.sheetly_auth = os.getenv("SHEETLY_FLIGHTDEALS_AUTHENTICATION")
         self.sheetly_headers = {
             "Authorization": self.sheetly_auth,
@@ -21,14 +23,25 @@ class DataManager:
 
     def get_data(self):
         """Populates the data attribute with the data from the Google Sheet."""
-        response = requests.get(url=self.sheetly_endpoint, headers=self.sheetly_headers)
-        response.raise_for_status()
-        self.data = response.json()
+        price_response = requests.get(url=self.sheetly_price_endpoint, headers=self.sheetly_headers)
+        price_response.raise_for_status()
+        self.price_data = price_response.json()
 
+        user_response = requests.get(url=self.sheetly_user_endpoint, headers=self.sheetly_headers)
+        user_response.raise_for_status()
+        self.user_data = user_response.json()
+
+
+    def get_customer_emails(self):
+        """Returns a list of customer emails from the Google Sheet"""
+        emails = []
+        for user in self.user_data["users"]:
+            emails.append(user["enterYourEmail"])
+        return emails
 
     def set_iata_code(self, iata_code, row_id):
         """Sets IATA code in the GOogle Sheet for the given row ID. Data attribute is updated with the new data."""
-        endpoint = f"{self.sheetly_endpoint}/{row_id}"
+        endpoint = f"{self.sheetly_price_endpoint}/{row_id}"
         updated_data = {
             "price": {
                 "iataCode": iata_code
@@ -44,3 +57,17 @@ class DataManager:
         self.get_data()
         
         print("IATA code updated to: " + iata_code)
+
+
+# datamanager = DataManager()
+# emails = datamanager.get_customer_emails()
+
+# print(emails)
+
+# test = {'users': [{'timestamp': '4/17/2025 10:20:12', 'enterYourFirstName': 'Brian', 'enterYourLastName': 'Salazar', 'enterYourEmail': 'briansalazar5@gmail.com', 'id': 2}, {'timestamp': '4/18/2025 9:02:50', 'enterYourFirstName': 'Brian', 'enterYourLastName': 'Salazar', 'enterYourEmail': 'bstestndev@gmail.com', 'id': 3}]}
+
+# emails = []
+# for user in test["users"]:
+#     emails.append(user["enterYourEmail"])
+# print(emails)
+# print(test["users"][0]["enterYourEmail"])#
