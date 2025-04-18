@@ -1,4 +1,4 @@
-[amedeus]: https://developers.amadeus.com/
+[amadeus]: https://developers.amadeus.com/
 [sheetlysite]: https://sheety.co/
 # Day 39 & 40: Flight Deal Tracker Capstone
 ![Flight deals email](../Images/Day40-FlightDealEmail.png)
@@ -19,7 +19,7 @@ While working through the project, I identified the following potential improvem
 ## Project
 ### APIs Used
 For this project, the following APIs were used:
--	[**Amedeus**][amedeus] – Amedeus is used in this project to obtain the IATA codes for the cities being searched. Additionally, Amedeus was used to return flight data for the destination cities.
+-	[**Amadeus**][amadeus] – Amadeus is used in this project to obtain the IATA codes for the cities being searched. Additionally, Amadeus was used to return flight data for the destination cities.
 -	[**Sheeyly**][sheetlysite] -  Sheetly is used in this project to interact with the **flight-deals spreadsheet** on **Google Sheets**. Sheetly is used to interact with both the **prices** and **users** tables.
 
 ### Modules used
@@ -27,16 +27,16 @@ For this project, the following APIs were used:
 **Dotenv** and the **os module** are used for getting the environment variables used in the project.
 
 #### Datetime
-**Datetime** is used to format the date value used by the Amedeus API endpoint to return flight data.
+**Datetime** is used to format the date value used by the Amadeus API endpoint to return flight data.
 
 #### Requests
-**Requests** is used to interact with the Amedeus API and Sheetly API endpoints.
+**Requests** is used to interact with the Amadeus API and Sheetly API endpoints.
 
 #### Smtplib
 **Smtplib** is first used in Day 39 to send an email to a single user. On day 40, smtplib sends an email to a list of users
 
 #### Time
-The **time module** is used when querying the Amedeus flight search API endpoint. To avoid hitting any potential rate limiters, **time.sleep** is used to ensure there is a pause between queries.
+The **time module** is used when querying the Amadeus flight search API endpoint. To avoid hitting any potential rate limiters, **time.sleep** is used to ensure there is a pause between queries.
 
 ### Project Files
 #### Data_manager.py
@@ -48,7 +48,7 @@ The **get_data method** uses a GET request to retrieve spreadsheet data. This me
 
 ![Google Sheets Response](../Images/Day40-FormsResponse.png)
 
-The **set_iata_code method** is used to set the **iata_codes** on the **prices table**. When the project is initially started, this column is blank. Working with **Amedeus**, the **IATA values** for the associated city are populated.
+The **set_iata_code method** is used to set the **iata_codes** on the **prices table**. When the project is initially started, this column is blank. Working with **Amadeus**, the **IATA values** for the associated city are populated.
 
 #### Flight_data.py
 **Flight_data.py** contains the **FlightData** class and is used to parse through the JSON data that is passed through it and return a tuple of the parsed data. This parsed data is used in **main.py** to create a **dictionary** of the **data that will be used in the email sent to a user** if flight deals are found.
