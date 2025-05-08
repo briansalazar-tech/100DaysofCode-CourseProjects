@@ -23,24 +23,40 @@ game_end = time.time() + 60 * 5 # 5 minutes
 
 while True:
     cookie.click()
-#     money = int(driver.find_element(By.ID, value="money").text)
-#     # Buy cursor
-#     cursor_price = driver.find_element(By.CSS_SELECTOR, value="#buyCursor b").text
-#     cursor_price_int = int(cursor_price.split(" - ")[1].strip())
-#     # Buy grandma
-#     grandma_price = driver.find_element(By.CSS_SELECTOR, value="#buyGrandma b").text
-#     grandma_price_int = int(grandma_price.split(" - ")[1].strip())
-    
-#     if time.time() > check_price:
-#         if money > grandma_price_int:
-#             buy_grandma = driver.find_element(By.ID, value="buyGrandma")
-#             buy_grandma.click()
+    store_prices = driver.find_elements(By.CSS_SELECTOR, value="#store b")
+    item_prices = []
 
-#         if money > cursor_price_int:
-#             buy_cursur = driver.find_element(By.ID, value="buyCursor")
-#             buy_cursur.click()
+    if time.time() > check_price:
 
-#         check_price = time.time() + 5
+        # Get the price from the CSS selector
+        for item in store_prices:
+            if item.text != "":
+                cost = int(item.text.split("-")[1].replace(",", "").strip())
+                item_prices.append(cost)
+
+        # Create dictionary of items and their prices
+        store_upgrades = {}
+        for item in range(len(item_prices)):
+            store_upgrades[item_prices[item]] = item_id[item]
+        
+        # Get money count
+        money = int(driver.find_element(By.ID, value="money").text.replace(",", ""))
+
+        # Items that can be bought
+        affordable_items = {}
+        for cost, id in store_upgrades.items():
+            if money > cost:
+                affordable_items[cost] = id
+
+        # Purchase upgrade
+        try:
+            highest_priced_item = max(affordable_items)
+            print(f"highest_affordable: {highest_priced_item}")
+            item_to_purchase_id = affordable_items[highest_priced_item]
+            driver.find_element(By.ID, value=item_to_purchase_id).click()
+        except ValueError:
+            print("No items avaialble for purchase")
+            pass
 
     # Break loop after 5 minutes
     if time.time() > game_end:
