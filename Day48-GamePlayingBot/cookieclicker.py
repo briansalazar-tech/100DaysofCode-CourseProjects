@@ -19,7 +19,7 @@ for item in items:
 
 # Check item prices every 5 seconds
 check_price = time.time() + 5
-
+game_end = time.time() + 60 * 5 # 5 minutes
 
 while True:
     cookie.click()
@@ -41,4 +41,9 @@ while True:
 #             buy_cursur.click()
 
 #         check_price = time.time() + 5
-    
+
+    # Break loop after 5 minutes
+    if time.time() > game_end:
+        cookies_per_second = driver.find_element(By.ID, value="cps").text
+        print(f"Cookies per second after 5 minutes: {cookies_per_second}")
+        break
