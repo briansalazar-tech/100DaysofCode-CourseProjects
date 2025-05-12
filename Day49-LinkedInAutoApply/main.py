@@ -1,15 +1,19 @@
+import time
+import os
+from dotenv import load_dotenv
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
-import time
+
+load_dotenv()
 
 chrome_options = webdriver.ChromeOptions()
 chrome_options.add_experimental_option("detach", True)
 driver = webdriver.Chrome(options=chrome_options)
 
 JOB_PAGE = "https://www.linkedin.com/jobs/search/?currentJobId=3702818809&f_LF=f_AL&geoId=102257491&keywords=python%20developer&location=London%2C%20England%2C%20United%20Kingdom"
-LINKEDIN_EMAIL = ""
-LINKEDIN_PASSWORD = None
+LINKEDIN_EMAIL = os.getenv("LINKEDIN_EMAIL")
+LINKEDIN_PASSWORD = os.getenv("LINKEDIN_PASSWORD")
 
 # Open the URL with preconfigured job settings (While signed out)
 driver.get(url=JOB_PAGE)
@@ -45,7 +49,6 @@ ember_unfiltered = []
 for job in get_all_jobs:
     job_id = job.get_attribute("id")
     ember_unfiltered.append(job_id)
-
 ember_list = []
 # For loop is used to filter out "" entries and append actual ember## entries to the new ember list
 for id in ember_unfiltered:
@@ -69,7 +72,6 @@ for item in ember_list[0:-3]:
     # Apply to all jobs
     print("Company Followed")
     time.sleep(2)
-
 # Close Chrome
 print("Chrome is closing...")
 time.sleep(5)
