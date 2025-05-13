@@ -1,23 +1,20 @@
+import os
 import time
+from dotenv import load_dotenv
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
-# TODOs
-# Log into Tinder with Gmail account
-# Accept/dismiss pop ups
-# Dislike everyone
 
-# Dislike button
-# //*[@id="q-637390230"]/div/div[1]/div/main/div[1]/div/div/div/div/div[1]/div[1]/div/div[4]/div/div[2]/button
-# //*[@id="q-637390230"]/div/div[1]/div/main/div[1]/div/div/div/div/div[1]/div[1]/div/div[4]/div/div[2]/button
+load_dotenv()
 
-FB_USERNAME = ""
-FB_PASSWORD = None
+FB_USERNAME = os.getenv("FB_USERNAME")
+FB_PASSWORD = os.getenv("FB_PASSWORD")
 
 chrome_options = webdriver.ChromeOptions()
 chrome_options.add_experimental_option("detach", True)
 driver = webdriver.Chrome(options=chrome_options)
 
+# Open the Tinder website
 driver.get(url="https://www.tinder.com")
 time.sleep(3)
 
@@ -25,6 +22,7 @@ cookies = driver.find_element(By.XPATH, value='//*[@id="q-637390230"]/div/div[2]
 cookies.click()
 time.sleep(2)
 
+# Login with Facebook
 log_in_button = driver.find_element(By.LINK_TEXT, value="Log in")
 log_in_button.click()
 time.sleep(5)
@@ -42,13 +40,16 @@ time.sleep(5)
 password = driver.find_element(By.NAME, value="pass")
 password.send_keys(FB_PASSWORD, Keys.ENTER)
 driver.switch_to.window(main_window)
-# "login"
+
+# Dismiss pop up windows
 time.sleep(10)
 allow_location = driver.find_element(By.XPATH, value='//*[@id="q1929195990"]/main/div/div/div/div[3]/button[1]')
 allow_location.click()
 time.sleep(5)
 enable_notifications = driver.find_element(By.XPATH, value='//*[@id="q1929195990"]/main/div/div/div/div[3]/button[2]')
 enable_notifications.click()
+
+# Swipe away
 for n in range(20):
     time.sleep(5)
     dislike_button = driver.find_element(By.XPATH, value='//*[@id="q-637390230"]/div/div[1]/div/main/div[2]/div/div/div[1]/div[1]/div/div[3]/div/div[2]/button')
