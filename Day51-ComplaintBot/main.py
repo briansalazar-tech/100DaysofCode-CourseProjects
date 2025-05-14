@@ -1,13 +1,17 @@
+import os
 import time
+from dotenv import load_dotenv
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 
+load_dotenv()
+
 PROMISED_DOWN = 150
 PROMISED_UP = 10
-TWITTER_EMAIL = ""
-TWITTER_USERNAME = ""
-TWITTER_PASSWORD = None
+TWITTER_EMAIL = os.getenv("TEST_EMAIL")
+TWITTER_USERNAME = os.getenv("TWITTER_USERNAME")
+TWITTER_PASSWORD = os.getenv("TWITTER_PASSWORD")
 
 CHROME_OPTIONS = webdriver.ChromeOptions().add_experimental_option("detach", True)
 
