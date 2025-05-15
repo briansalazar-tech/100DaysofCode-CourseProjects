@@ -1,12 +1,17 @@
+import os
 import time
+from dotenv import load_dotenv
 from selenium import webdriver
 from selenium.webdriver.common.by import By 
 from selenium.webdriver.common.keys import Keys
 
-SEARCH_ACCOUNT = ""
-INSTAGRAM_USERNAME = ""
-INSTAGRAM_PASSWORD = None
+load_dotenv()
+
+SEARCH_ACCOUNT = "account_name" # Replace with the account you want to search for
+INSTAGRAM_USERNAME = os.getenv("INSTAGRAM_USERNAME")
+INSTAGRAM_PASSWORD = os.getenv("INSTAGRAM_PASSWORD")
 CHROME_OPTIONS = webdriver.ChromeOptions().add_experimental_option("detach", True)
+
 
 class InstagramBot:
 
@@ -27,7 +32,6 @@ class InstagramBot:
         time.sleep(10)
     
     def follow(self, user_account):
-            # Error when accessing the name value for the button
             user_account = self.driver.find_element(By.NAME, value="._acan _acap _acas _aj1-")
             user_account.click()
             time.sleep(5)
@@ -56,7 +60,6 @@ class InstagramBot:
         following_link = self.driver.find_element(By.XPATH, value='/html/body/div[2]/div/div/div[2]/div/div/div/div[1]/div[1]/div[2]/div[2]/section/main/div/header/section/ul/li[3]/a')
         following_link.click()
         time.sleep(5)
-        # ERROR Loop through list and follow all followers - Error on 2nd for loop. Cannot find element by specified value
         print("Getting accounts")
         get_followers = self.driver.find_elements(By.CSS_SELECTOR, ".x1dm5mii")
         print(len(get_followers))
