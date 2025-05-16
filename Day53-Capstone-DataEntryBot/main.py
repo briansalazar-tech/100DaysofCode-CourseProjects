@@ -27,7 +27,6 @@ property_addresses = []
 for address in address_html:
     address = address.get_text().strip()
     property_addresses.append(address)
-print(len(property_addresses))
 
 # Property price
 price_html = soup.find_all(class_="PropertyCardWrapper__StyledPriceLine")
@@ -42,7 +41,6 @@ for card in price_html:
     if "/" in price:
         price = price.split("/")[0]
     property_prices.append(float(price))
-print(len(property_prices))
 
 # Property link
 link_html = soup.find_all(class_="StyledPropertyCardDataArea-anchor")
@@ -50,6 +48,19 @@ property_links = []
 for link in link_html:
     link = link.get("href")
     property_links.append(link)
-print(len(property_links))
 
+# Create list for dictionary data
+properties = []
+# Create dictionary of property data
+for index in range(len(property_addresses)):
+    property_data = {
+        "address": property_addresses[index],
+        "price": property_prices[index],
+        "link": property_links[index],
+    }
+    properties.append(property_data)
+
+for property in properties:
+    print(property)
+    
 ## PART 2 - Enter data into Google Sheets ##
