@@ -1,18 +1,21 @@
 import os
 import requests
 import time
-from pprint import pprint
 from dotenv import load_dotenv
 from bs4 import BeautifulSoup as bs
 from selenium import webdriver
 from selenium.webdriver.common.by import By
-from selenium.webdriver.common.keys import Keys
 
 load_dotenv()
 
 ZILLOW_URL = "https://appbrewery.github.io/Zillow-Clone/"
+FORMS_URL = os.getenv("PROPERTY_FORMS_URL")
+CHROME_OPTIONS = webdriver.ChromeOptions().add_experimental_option("detach", True)
+
+driver = webdriver.Chrome(options=CHROME_OPTIONS)
 
 ## PART 1 - Scrape Zillow clone website ##
+print("Opening Zillow clone website and scraping necessary data...")
 # Get HTML content from the clone Zillow website
 response = requests.get(url=ZILLOW_URL)
 response.raise_for_status()
@@ -60,7 +63,41 @@ for index in range(len(property_addresses)):
     }
     properties.append(property_data)
 
-for property in properties:
-    print(property)
-    
+print("Properties dicitonary created")
+
 ## PART 2 - Enter data into Google Sheets ##
+print("Opening Google Forms...")
+fill_form = driver.get(url=FORMS_URL)
+# Enter forms data using for loop
+for index in range(len(properties)):
+    address = properties[index]["address"]
+    price = properties[index]["price"]
+    link = properties[index]["link"]
+    
+    print(f"Adding the following address to Forms response: {address}")
+    
+    # Enter address
+    address_input = driver.find_element(By.XPATH, value='//*[@id="mG61Hd"]/div[2]/div/div[2]/div[1]/div/div/div[2]/div/div[1]/div/div[1]/input')
+    address_input.send_keys(address)
+    time.sleep(2)
+    # Enter price
+    price_input = driver.find_element(By.XPATH, value='//*[@id="mG61Hd"]/div[2]/div/div[2]/div[2]/div/div/div[2]/div/div[1]/div/div[1]/input')
+    price_input.send_keys(price)
+    time.sleep(2)
+    # Enter link
+    link_input = driver.find_element(By.XPATH, value='//*[@id="mG61Hd"]/div[2]/div/div[2]/div[3]/div/div/div[2]/div/div[1]/div/div[1]/input')
+    link_input.send_keys(link)
+    time.sleep(2)
+    # Click submit button
+    submit_button = driver.find_element(By.XPATH, value='//*[@id="mG61Hd"]/div[2]/div/div[3]/div[1]/div[1]/div/span')
+    submit_button.click()
+    time.sleep(3)
+    # Click submit another response link
+    submit_another_link = driver.find_element(By.XPATH, value='/html/body/div[1]/div[2]/div[1]/div/div[4]/a')
+    submit_another_link.click()
+
+    time.sleep(3)
+
+# Close browser
+driver.quit()
+print("All data has been entered into the Google forms. Exiting program...")
