@@ -4,7 +4,8 @@ from flask import Flask
 app = Flask(__name__)
 
 def align_center(function):
-    def wrapper_function(*args):
+    """Center the text in the middle of the page"""
+    def wrapper_function():
         return f"<div style='text-align: center; margin-top: 5rem'>{function()}</div>"
     return wrapper_function
 
@@ -33,7 +34,7 @@ def guess_number(guess):
     # check if correct
     if guess == random_number:
         return f'<div style="text-align: center; margin-top: 5rem"><h1 style="color: green">Correct! The number was {random_number}!</h1> \
-                 img src="https://media.giphy.com/media/4T7e4DmcrP9du/giphy.gif"></div>'
+                 <img src="https://media.giphy.com/media/4T7e4DmcrP9du/giphy.gif"></div>'
 
 
 if __name__ == "__main__":
