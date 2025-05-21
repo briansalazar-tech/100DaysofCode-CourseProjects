@@ -12,11 +12,15 @@
         <div class="title"><h1>My Blog</h1></div>
            </div>
         <div class="content">
-            <div class="card">
-                <h2>Title</h2>
-                <p>Post Body</p>
-            </div>
-
+            {% for post in all_posts: %}
+                {% if post["id"] == num: %}
+                    <div class="card">
+                        <h2>{{ post["title"] }}</h2>
+                        <p>{{ post["body"] }}</p>
+                        <a href="{{ url_for('home') }}">Back</a>
+                    </div>
+                {% endif %}
+            {% endfor %}
     </div>
 </div>
 </body>
