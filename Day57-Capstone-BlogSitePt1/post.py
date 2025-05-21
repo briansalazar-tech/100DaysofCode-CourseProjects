@@ -14,7 +14,3 @@ posts_list = []
 for post in response:
     new_post = Post(post)
     posts_list.append(new_post)
-
-# for post in posts_list:
-#     if post.id == 2:
-#         print(post.title)
