@@ -1,7 +1,14 @@
-from flask import Flask, render_template, request
 import requests
+import smtplib
+import os
+from dotenv import load_dotenv
+from flask import Flask, render_template, request
 
-# USE YOUR OWN npoint LINK! ADD AN IMAGE URL FOR YOUR POST. 👇
+load_dotenv()
+
+EMAIL_ADDRESS = os.getenv("TEST_EMAIL")
+EMAIL_PASSWORD = os.getenv("TEST_EMAIL_APP_PW")
+
 response = requests.get("https://api.npoint.io/4229128df8b9b655ba0e")
 posts = response.json()
 
@@ -27,14 +34,30 @@ def contact():
         email = request.form["email"]
         phone = request.form["phone"]
         submission = request.form["message"]
+
+        email_body = f"Name: {name}\nEmail: {email}\nPhone: {phone}\nMessage:\n{submission}"
+        
+        # Send an email
+        with smtplib.SMTP("smtp.gmail.com") as connection:
+            connection.starttls()
+            connection.login(user=EMAIL_ADDRESS,
+                             password=EMAIL_PASSWORD)
+            connection.sendmail(
+                from_addr=email,
+                to_addrs=EMAIL_ADDRESS,
+                msg=f"Subject:New Message from {name}\n\n{email_body}"
+            )
+            print("Email sent successfully!")
+
         return render_template("contact.html", message_sent=message_sent, message=f"{name}, your message has been sent!")
     return render_template("contact.html", message_sent=message_sent)
 
 
-@app.route("/form-entry", methods=["GET", "POST"])
-def receive_data():
-    if request.method == "POST":
-        return render_template("contact.html", message="Your message has been sent successfully!")
+# Used to test form POST method. Once validated, functioanlity moved into contact route.
+# @app.route("/form-entry", methods=["GET", "POST"])
+# def receive_data():
+#     if request.method == "POST":
+#         return render_template("contact.html", message="Your message has been sent successfully!")
 
 
 @app.route("/post/<int:index>")
