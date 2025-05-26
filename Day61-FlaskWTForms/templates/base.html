@@ -1,0 +1,19 @@
+<!-- 
+ Base styling page. 
+ Individual page content loaded within blocks. 
+ This page can be used to apply uniform styling
+  -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}{% endblock %}</title>
+    {% block styles %}
+        {{ bootstrap.load_css() }}
+    {% endblock %}
+
+</head>
+<body>
+    {% block content %}{% endblock %}
+</body>
+</html>
