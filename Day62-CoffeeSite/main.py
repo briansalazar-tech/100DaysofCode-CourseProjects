@@ -22,12 +22,12 @@ class CafeForm(FlaskForm):
         )
     
     open_time = StringField(
-        label="Open Time",
+        label="Open Time Ex. 5:00AM",
         validators=[DataRequired(message="Opening time is required")]
     )
 
     closing_time = StringField(
-        label="Closing Time",
+        label="Closing Time Ex. 5:00PM",
         validators=[DataRequired(message="Closing time is required")]
     )
 
@@ -92,6 +92,7 @@ def cafes():
         list_of_rows = []
         for row in csv_data:
             list_of_rows.append(row)
+        print(list_of_rows[0])
     return render_template('cafes.html', cafes=list_of_rows)
 
 
