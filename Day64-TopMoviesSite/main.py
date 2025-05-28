@@ -5,9 +5,18 @@ from flask_bootstrap import Bootstrap5
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 from sqlalchemy import Integer, String, Float
-from forms import RateMovieForm
+from forms import RateMovieForm, AddForm
 import requests
 
+load_dotenv()
+
+TMDB_HEADERS = {
+    "accept": "application/json",
+    "Authorization": os.getenv("TMDB_BEARER")
+}
+TMDB_SEARCH_URL = "https://api.themoviedb.org/3/search/movie"
+TMDB_IMG_URL = "https://image.tmdb.org/t/p/w500"
+TMDB_MOVIE_ID_URL = "https://api.themoviedb.org/3/movie/"
 ABS_PATH = os.getenv("ABS_PATH")
 DB_PATH = ABS_PATH + "Day64-TopMoviesSite/instance/top-movies.db"
 
@@ -71,6 +80,58 @@ def home():
     return render_template("index.html",movies=all_movies)
 
 
+@app.route("/add", methods=["GET", "POST"])
+def add():
+    form = AddForm()
+
+    if form.validate_on_submit():
+        search_title = form.title.data
+
+        parameters = {
+            "query": search_title
+        }
+
+        response = requests.get(url=TMDB_SEARCH_URL, headers=TMDB_HEADERS, params=parameters)
+        movie_list = response.json()["results"]
+        print(movie_list)
+
+        return render_template("select.html", movies=movie_list)
+
+    return render_template("add.html", form=form)
+
+
+@app.route("/find")
+def find():
+    movie_id = request.args.get("movie_id")
+    movie_url= f"{TMDB_MOVIE_ID_URL}{movie_id}?language=en-US"
+    response = requests.get(url=movie_url, headers=TMDB_HEADERS).json()
+
+    title = response["title"]
+    img_url = f"{TMDB_IMG_URL}{response["poster_path"]}"
+    year = response["release_date"].split("-")[0]
+    
+    description = response["overview"]
+    # If nullable set to True on table, db can be populated without these prepopulated
+    rating = 0
+    ranking = 0
+    review = "N/A"
+
+    new_movie = Movie(
+        title=title,
+        year=year,
+        description=description,
+        rating=rating,
+        ranking=ranking,
+        review=review,
+        img_url=img_url
+
+    )
+    db.session.add(new_movie)
+    db.session.commit()
+
+    return redirect(url_for("edit", id = new_movie.id))
+
+
 @app.route("/edit", methods=["GET", "POST"])
 def edit():
     movie_id = request.args.get("id")
@@ -95,10 +156,10 @@ def edit():
 @app.route("/delete", methods=["GET"])
 def delete():
     movie_id = request.args.get("id")
-    with app.app_context():
-        movie_to_delete = db.get_or_404(Movie, movie_id)
-        db.session.delete(movie_to_delete)
-        db.session.commit()
+
+    movie_to_delete = db.get_or_404(Movie, movie_id)
+    db.session.delete(movie_to_delete)
+    db.session.commit()
     
     return redirect(url_for("home"))
 
