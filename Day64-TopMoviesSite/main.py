@@ -5,9 +5,7 @@ from flask_bootstrap import Bootstrap5
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 from sqlalchemy import Integer, String, Float
-from flask_wtf import FlaskForm
-from wtforms import StringField, SubmitField
-from wtforms.validators import DataRequired
+from forms import RateMovieForm
 import requests
 
 ABS_PATH = os.getenv("ABS_PATH")
@@ -65,11 +63,44 @@ with app.app_context():
 #     db.session.add(second_movie)
 #     db.session.commit()
 
+
 @app.route("/")
 def home():
     result = db.session.execute(db.select(Movie).order_by(Movie.ranking))
     all_movies = result.scalars()
     return render_template("index.html",movies=all_movies)
+
+
+@app.route("/edit", methods=["GET", "POST"])
+def edit():
+    movie_id = request.args.get("id")
+    current_movie = db.session.execute(db.select(Movie).where(Movie.id == movie_id)).scalar()
+    
+    form = RateMovieForm()
+
+    if form.validate_on_submit():
+        updated_rating = form.rating.data
+        updated_review = form.review.data
+            
+        # With app context removed as it was causing movie to not update
+        current_movie.rating = float(updated_rating)
+        current_movie.review = updated_review
+        db.session.commit()
+
+        return redirect(url_for("home"))
+
+    return render_template("edit.html", movie=current_movie, form=form)
+
+
+@app.route("/delete", methods=["GET"])
+def delete():
+    movie_id = request.args.get("id")
+    with app.app_context():
+        movie_to_delete = db.get_or_404(Movie, movie_id)
+        db.session.delete(movie_to_delete)
+        db.session.commit()
+    
+    return redirect(url_for("home"))
 
 
 if __name__ == '__main__':
