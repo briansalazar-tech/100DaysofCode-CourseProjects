@@ -75,8 +75,15 @@ with app.app_context():
 
 @app.route("/")
 def home():
-    result = db.session.execute(db.select(Movie).order_by(Movie.ranking))
-    all_movies = result.scalars()
+    result = db.session.execute(db.select(Movie).order_by(Movie.rating))
+    all_movies = result.scalars().all()
+    print(all_movies)
+
+    for index in range(len(all_movies)):
+        all_movies[index].ranking = len(all_movies) - index
+
+    db.session.commit() 
+
     return render_template("index.html",movies=all_movies)
 
 
