@@ -33,6 +33,7 @@ app.config["SQLALCHEMY_DATABASE_URI"] = f"sqlite:///{DB_PATH}"
 db = SQLAlchemy(model_class=Base)
 db.init_app(app)
 
+
 # CREATE TABLE
 class Movie(db.Model):
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
@@ -44,10 +45,11 @@ class Movie(db.Model):
     review: Mapped[str] = mapped_column(String(250), nullable=False)
     img_url: Mapped[str] = mapped_column(String(500), nullable=False)
 
+
 with app.app_context():
     db.create_all()
 
-# Add entry(s)
+##  Add entry(s) - Only used for the start of the project ##
 # new_movie = Movie(
 #     title="Phone Booth",
 #     year=2002,
@@ -75,9 +77,12 @@ with app.app_context():
 
 @app.route("/")
 def home():
-    result = db.session.execute(db.select(Movie).order_by(Movie.rating))
-    all_movies = result.scalars().all()
-    print(all_movies)
+    """
+    Index page returns the list of movies in the movies database. Movies are ordered based on the value of the movies rating.
+    If the user hovers over a movie, they can edit the entry or delete the entry from the list of movies.
+    """
+    result = db.session.execute(db.select(Movie).order_by(Movie.rating)) # Sorts movies by rating
+    all_movies = result.scalars().all() # .all() converts db items into list entries
 
     for index in range(len(all_movies)):
         all_movies[index].ranking = len(all_movies) - index
@@ -89,6 +94,11 @@ def home():
 
 @app.route("/add", methods=["GET", "POST"])
 def add():
+    """
+    The user is prompted to provide a movie title to search for in the add route.
+    After providing a movie title, a list of movies is rendered using the select.html page.
+    Data rendered on this page is provided via a search on the TMDB url.
+    """
     form = AddForm()
 
     if form.validate_on_submit():
@@ -100,7 +110,6 @@ def add():
 
         response = requests.get(url=TMDB_SEARCH_URL, headers=TMDB_HEADERS, params=parameters)
         movie_list = response.json()["results"]
-        print(movie_list)
 
         return render_template("select.html", movies=movie_list)
 
@@ -109,6 +118,13 @@ def add():
 
 @app.route("/find")
 def find():
+    """
+    Searches the TMDB website for the movie specified by the movie ID.
+    The movies title, image URL, year, and description are pulled from the query result.
+    Values are used to create a new entry in the Movie DB. 
+    The user is redirected to the edit page to provide the movie's rating and review content.
+    Ranking is provided when the home page is reloaded based on the value of the rating input.
+    """
     movie_id = request.args.get("movie_id")
     movie_url= f"{TMDB_MOVIE_ID_URL}{movie_id}?language=en-US"
     response = requests.get(url=movie_url, headers=TMDB_HEADERS).json()
@@ -116,9 +132,8 @@ def find():
     title = response["title"]
     img_url = f"{TMDB_IMG_URL}{response["poster_path"]}"
     year = response["release_date"].split("-")[0]
-    
     description = response["overview"]
-    # If nullable set to True on table, db can be populated without these prepopulated
+    # If nullable set to True on table, db can be populated without these prepopulated. User will enter values when redirected to edit page
     rating = 0
     ranking = 0
     review = "N/A"
@@ -131,7 +146,6 @@ def find():
         ranking=ranking,
         review=review,
         img_url=img_url
-
     )
     db.session.add(new_movie)
     db.session.commit()
@@ -141,6 +155,7 @@ def find():
 
 @app.route("/edit", methods=["GET", "POST"])
 def edit():
+    """Edit the specified movie's rating and review text."""
     movie_id = request.args.get("id")
     current_movie = db.session.execute(db.select(Movie).where(Movie.id == movie_id)).scalar()
     
@@ -162,6 +177,7 @@ def edit():
 
 @app.route("/delete", methods=["GET"])
 def delete():
+    """Deletes the specified movie from the movies DB by the specified movie ID."""
     movie_id = request.args.get("id")
 
     movie_to_delete = db.get_or_404(Movie, movie_id)
