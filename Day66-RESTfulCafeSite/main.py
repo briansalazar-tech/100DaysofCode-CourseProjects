@@ -159,7 +159,27 @@ def update_price(cafe_id):
         return jsonify(
             {"Invalid parameter": "Make sure you use the new_price parameter. Ex /update-price/22?new_price=$2.50."}
         ), 404
+    
 # HTTP DELETE - Delete Record
+@app.route("/report-closed/<int:cafe_id>", methods=["GET", "DELETE"])
+def report_closed(cafe_id):
+    if request.args.get("api_key") == "TopSecretAPIKey":
+        try:
+            cafe_to_delete = db.session.execute(db.select(Cafe).where(Cafe.id == cafe_id)).scalar()
+            db.session.delete(cafe_to_delete)
+            db.session.commit()
+            return jsonify(
+                {"Entry deleted": "The cafe with the specified ID has been deleted from the database."}
+            )
+        except:
+            return jsonify(
+                {"Entry does not exist": "A cafe with the specified ID value entered does not exist."}
+            ), 404
+
+    else:
+        return jsonify(
+            {"Invalid parameter": "Enter a valid API key to complete this request. Ex. /report-closed/22?api_key=stringvalue"}
+        ), 403
 
 
 if __name__ == '__main__':
