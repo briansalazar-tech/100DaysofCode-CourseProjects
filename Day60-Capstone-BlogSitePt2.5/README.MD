@@ -1,4 +1,4 @@
-# Day 60: Blog Capstone Project Part 3 (Contact Form)
+# Day 60: Blog Capstone Project Part 2.5 (Contact Form)
 ## Lesson Overview
 **Day 60** focuses on submitting forms and POST requests with Flask. The lesson starts by creating a basic user input form to test working with POST requests and Flask. After completing the testing, the main goal of the day was to functionality to the contact page.
 ## Project
