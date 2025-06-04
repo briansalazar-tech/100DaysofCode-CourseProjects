@@ -15,6 +15,13 @@ DB_PATH = ABS_PATH + "Day68-FlaskAuthentication/instance/users.db"
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'secret-key-goes-here'
 
+login_manager = LoginManager()
+login_manager.init_app(app)
+
+@login_manager.user_loader
+def load_user(user_id):
+    return db.get_or_404(User, user_id)
+
 # CREATE DATABASE
 class Base(DeclarativeBase):
     pass
@@ -24,7 +31,7 @@ db = SQLAlchemy(model_class=Base)
 db.init_app(app)
 
 # CREATE TABLE IN DB
-class User(db.Model):
+class User(UserMixin, db.Model):
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
     email: Mapped[str] = mapped_column(String(100), unique=True)
     password: Mapped[str] = mapped_column(String(100))
@@ -43,37 +50,56 @@ def home():
 @app.route('/register', methods=["GET", "POST"])
 def register():
     if request.method == "POST":
+        password = request.form["password"]
+        secured_password = generate_password_hash(password=password, method="pbkdf2:sha256", salt_length=8)
         name = request.form["name"]
         email = request.form["email"]
-        password = request.form["password"]
         new_user = User(
             name=name,
             email=email,
-            password=password,
+            password=secured_password,
         )
         db.session.add(new_user)
         db.session.commit()
+
+        login_user(new_user)
+        
         return render_template("secrets.html", name=name)
 
     return render_template("register.html")
 
 
-@app.route('/login')
+@app.route('/login', methods=["GET", "POST"])
 def login():
+    if request.method == "POST":
+        email = request.form["email"]
+        password = request.form["password"]
+        
+        user = db.session.execute(db.select(User).where(User.email == email)).scalar()
+
+        if check_password_hash(pwhash=user.password, password=password):
+            login_user(user)
+            return redirect(url_for("secrets"))
+
     return render_template("login.html")
 
 
 @app.route('/secrets')
+@login_required
 def secrets():
-    return render_template("secrets.html")
+    name=current_user.name
+    print(current_user.name)
+    return render_template("secrets.html", name=name)
 
 
 @app.route('/logout')
 def logout():
-    pass
+    logout_user()
+    return redirect(url_for("home"))
 
 
 @app.route('/download')
+@login_required
 def download():
     return send_from_directory(
         directory="static", path="files/cheat_sheet.pdf", as_attachment=True
