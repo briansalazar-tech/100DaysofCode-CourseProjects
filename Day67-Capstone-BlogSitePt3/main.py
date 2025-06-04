@@ -22,7 +22,7 @@ ckeditor = CKEditor(app)
 Bootstrap5(app)
 
 
-# New Post FOrm
+# New Post Form
 class NewPostForm(FlaskForm):
 
     post_title = StringField(
@@ -79,6 +79,7 @@ def get_all_posts():
     posts = result.scalars().all()
     return render_template("index.html", all_posts=posts)
 
+
 # TODO: Add a route so that you can click on individual posts.
 @app.route('/show_post/<int:post_id>')
 def show_post(post_id):
@@ -107,6 +108,7 @@ def add_new_post():
         return redirect(url_for("get_all_posts"))
     return render_template("make-post.html", form=form)
 
+
 # TODO: edit_post() to change an existing blog post
 @app.route("/edit-post/<post_id>", methods=["GET", "POST"])
 def edit_post(post_id):
@@ -129,7 +131,6 @@ def edit_post(post_id):
     return render_template("make-post.html", edit=True, form=edit_form)
 
 
-
 # TODO: delete_post() to remove a blog post from the database
 @app.route("/delete_post", methods=["GET"])
 def delete_post():
@@ -138,6 +139,7 @@ def delete_post():
     db.session.delete(post_to_delete)
     db.session.commit()
     return redirect(url_for("get_all_posts"))
+
 
 # Below is the code from previous lessons. No changes needed.
 @app.route("/about")
