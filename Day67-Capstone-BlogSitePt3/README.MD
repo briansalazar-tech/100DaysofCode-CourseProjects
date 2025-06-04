@@ -3,6 +3,7 @@
 **Day 67** enhances the functionality of the Blog website built out over the previous parts. Part three of the project adds the following enhancements:
 -	Using SQLite to store blog post data instead of an online JSON endpoint.
 -	The project also uses various request methods to interact with the database data.
+
 This documentation will focus solely on the additions made during this part of the Blog Capstone project. For previously added features, refer to the documentation in the previous sections.
 -	[Blog Capstone Part 1](../Day57-Capstone-BlogSitePt1)
 -	[Blog Capstone Part 2](../Day59-Capstone-BlogSitePt2)
