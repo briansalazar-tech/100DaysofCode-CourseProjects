@@ -44,16 +44,29 @@ with app.app_context():
 
 @app.route('/')
 def home():
-    return render_template("index.html")
+    logged_in = False
+    if current_user.is_authenticated:
+        logged_in = True
+    return render_template("index.html", is_logged_in=logged_in)
 
 
 @app.route('/register', methods=["GET", "POST"])
 def register():
     if request.method == "POST":
+        email = request.form["email"]
         password = request.form["password"]
         secured_password = generate_password_hash(password=password, method="pbkdf2:sha256", salt_length=8)
         name = request.form["name"]
-        email = request.form["email"]
+
+        # Check if user exists
+        result = db.session.execute(db.select(User).where(User.email == email))
+        user = result.scalar()
+ 
+        if user:
+            # User already exists
+            flash("An account already exists with that email. Please sign in.")
+            return redirect(url_for('login'))
+        
         new_user = User(
             name=name,
             email=email,
@@ -75,11 +88,20 @@ def login():
         email = request.form["email"]
         password = request.form["password"]
         
+        # Find the user based on the email address entered
         user = db.session.execute(db.select(User).where(User.email == email)).scalar()
-
-        if check_password_hash(pwhash=user.password, password=password):
+        if user == None:
+            flash("The username you have entered does not exist.")
+            return redirect(url_for("login"))
+        
+        # compare the enterted password with the hashed value in the DB
+        elif check_password_hash(pwhash=user.password, password=password):
             login_user(user)
             return redirect(url_for("secrets"))
+        else:
+            flash("The password you have entered is incorrect. Try again.")
+            return redirect(url_for("login"))
+
 
     return render_template("login.html")
 
