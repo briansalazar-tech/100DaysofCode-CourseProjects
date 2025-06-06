@@ -25,6 +25,12 @@ ckeditor = CKEditor(app)
 Bootstrap5(app)
 
 # TODO: Configure Flask-Login
+login_manager = LoginManager()
+login_manager.init_app(app)
+
+@login_manager.user_loader
+def load_user(user_id):
+    return db.get_or_404(User, user_id)
 
 
 # CREATE DATABASE
@@ -48,8 +54,8 @@ class BlogPost(db.Model):
 
 
 # TODO: Create a User table for all your registered users. 
-class User(db.Model):
-    __tablename__ = "user"
+class User(UserMixin, db.Model):
+    __tablename__ = "users"
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
     name: Mapped[str] = mapped_column(String(100))
     email: Mapped[str] = mapped_column(String(100), unique=True)
@@ -72,6 +78,12 @@ def register():
                                                   salt_length=8
                                                   )
 
+        # Check if user already exists
+        user = db.session.execute(db.select(User).where(User.email == email))
+        if user:
+            flash("An account already exists with that email. Please sign in.")
+            return redirect(url_for("login"))
+
         new_user = User(
             name=name,
             email=email,
@@ -79,18 +91,44 @@ def register():
         )
         db.session.add(new_user)
         db.session.commit()
+
+        login_user(new_user)
+        
         return redirect(url_for("get_all_posts"))
     return render_template("register.html", form=register_form)
 
 
 # TODO: Retrieve a user from the database based on their email. 
-@app.route('/login')
+@app.route('/login', methods=["GET", "POST"])
 def login():
-    return render_template("login.html")
+    login_form = LoginForm()
+    if login_form.validate_on_submit():
+        email = login_form.email.data
+        password = login_form.password.data
+        # Select the user
+        user = db.session.execute(db.select(User).where(User.email == email)).scalar()
+        
+        # Check if user exists
+        if user == None:
+            flash("The account you have entered does not exist.")
+            return redirect(url_for("login"))
+        
+        # Check if password is incorrect
+        elif not check_password_hash(pwhash=user.password, password=password):
+            flash("The password you have entered is incorrect. Try again.")
+            return redirect(url_for("login"))
+        
+        # Log in successful
+        elif check_password_hash(pwhash=user.password, password=password):
+            login_user(user)
+            return redirect(url_for("get_all_posts"))
+        
+    return render_template("login.html", form=login_form)
 
 
 @app.route('/logout')
 def logout():
+    logout_user()
     return redirect(url_for('get_all_posts'))
 
 

@@ -22,7 +22,9 @@ class RegisterForm(FlaskForm):
 
 # TODO: Create a LoginForm to login existing users
 class LoginForm(FlaskForm):
-    pass
+    email = EmailField(label="Email", validators=[DataRequired()])
+    password = PasswordField(label="Password", validators=[DataRequired()])
+    submit = SubmitField(label="Let Me In!")
 
 # TODO: Create a CommentForm so users can leave comments below posts
 class CommentForm(FlaskForm):
