@@ -14,9 +14,13 @@ class CreatePostForm(FlaskForm):
 
 
 # TODO: Create a RegisterForm to register new users
-
+class RegisterForm(FlaskForm):
+    pass
 
 # TODO: Create a LoginForm to login existing users
-
+class LoginForm(FlaskForm):
+    pass
 
 # TODO: Create a CommentForm so users can leave comments below posts
+class CommentForm(FlaskForm):
+    pass
