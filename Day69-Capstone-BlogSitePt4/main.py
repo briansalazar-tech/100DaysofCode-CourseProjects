@@ -59,8 +59,12 @@ class BlogPost(db.Model):
     subtitle: Mapped[str] = mapped_column(String(250), nullable=False)
     date: Mapped[str] = mapped_column(String(250), nullable=False)
     body: Mapped[str] = mapped_column(Text, nullable=False)
-    author: Mapped[str] = mapped_column(String(250), nullable=False)
+    # Forgeign key to User table
+    author_id: Mapped[int] = mapped_column(Integer, db.ForeignKey("users.id"))
+    # Refers to posts property in User class
+    author: Mapped[str] = relationship("User", back_populates="posts")
     img_url: Mapped[str] = mapped_column(String(250), nullable=False)
+
 
 
 # TODO: Create a User table for all your registered users. 
@@ -70,6 +74,8 @@ class User(UserMixin, db.Model):
     name: Mapped[str] = mapped_column(String(100))
     email: Mapped[str] = mapped_column(String(100), unique=True)
     password: Mapped[str] = mapped_column(String(100))
+    # Refers to author in BlogPost class
+    posts: Mapped[list[BlogPost]] = relationship("BlogPost", back_populates="author")
 
 with app.app_context():
     db.create_all()
