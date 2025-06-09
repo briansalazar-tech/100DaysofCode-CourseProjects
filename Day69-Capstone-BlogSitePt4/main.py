@@ -5,7 +5,7 @@ from flask import Flask, abort, render_template, redirect, url_for, flash
 from flask_bootstrap import Bootstrap5
 from flask_ckeditor import CKEditor
 from flask_gravatar import Gravatar
-from flask_login import UserMixin, login_user, LoginManager, current_user, logout_user
+from flask_login import UserMixin, login_user, LoginManager, current_user, logout_user, login_required
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.orm import relationship, DeclarativeBase, Mapped, mapped_column
 from sqlalchemy import Integer, String, Text
@@ -31,6 +31,16 @@ login_manager.init_app(app)
 @login_manager.user_loader
 def load_user(user_id):
     return db.get_or_404(User, user_id)
+
+
+# Similar to login_required function but checks if user_id is 1 (admin user)
+def admin_required(function):
+    @wraps(function)
+    def decorated_function(*args, **kwargs):
+        if current_user.is_authenticated and current_user.id != 1:
+            return abort(403)
+        return function(*args, **kwargs)
+    return decorated_function
 
 
 # CREATE DATABASE
@@ -79,7 +89,7 @@ def register():
                                                   )
 
         # Check if user already exists
-        user = db.session.execute(db.select(User).where(User.email == email))
+        user = db.session.execute(db.select(User).where(User.email == email)).scalar()
         if user:
             flash("An account already exists with that email. Please sign in.")
             return redirect(url_for("login"))
@@ -148,6 +158,8 @@ def show_post(post_id):
 
 # TODO: Use a decorator so only an admin user can create a new post
 @app.route("/new-post", methods=["GET", "POST"])
+@login_required
+@admin_required
 def add_new_post():
     form = CreatePostForm()
     if form.validate_on_submit():
@@ -167,6 +179,8 @@ def add_new_post():
 
 # TODO: Use a decorator so only an admin user can edit a post
 @app.route("/edit-post/<int:post_id>", methods=["GET", "POST"])
+@login_required
+@admin_required
 def edit_post(post_id):
     post = db.get_or_404(BlogPost, post_id)
     edit_form = CreatePostForm(
