@@ -64,7 +64,8 @@ class BlogPost(db.Model):
     # Refers to posts property in User class
     author: Mapped[str] = relationship("User", back_populates="posts")
     img_url: Mapped[str] = mapped_column(String(250), nullable=False)
-
+    # refers to the comments property in the Comment class
+    comments = relationship("Comment", back_populates="parent_post")
 
 
 # TODO: Create a User table for all your registered users. 
@@ -76,9 +77,37 @@ class User(UserMixin, db.Model):
     password: Mapped[str] = mapped_column(String(100))
     # Refers to author in BlogPost class
     posts: Mapped[list[BlogPost]] = relationship("BlogPost", back_populates="author")
+    # Refers to the Comments class
+    comments = relationship("Comment", back_populates="comment_author")
+
+
+class Comment(db.Model):
+    __table_name__= "comments"
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+
+    comment_author_id : Mapped[int] = mapped_column(Integer, db.ForeignKey("users.id"))
+    comment_author: Mapped[User] = relationship("User", back_populates="comments")
+    
+    post_id: Mapped[str] = mapped_column(Integer, db.ForeignKey("blog_posts.id"))
+    parent_post = relationship("BlogPost", back_populates="comments")
+    
+    text: Mapped[str] = mapped_column(Text, nullable=False)
 
 with app.app_context():
     db.create_all()
+
+
+# Gravatar profile images
+gravatar = Gravatar(
+    app,
+    size=100,
+    rating="g",
+    default="retro",
+    force_default=False,
+    force_lower=False,
+    use_ssl=False,
+    base_url=""
+)
 
 
 # TODO: Use Werkzeug to hash the user's password when creating a new user.
@@ -156,10 +185,24 @@ def get_all_posts():
 
 
 # TODO: Allow logged-in users to comment on posts
-@app.route("/post/<int:post_id>")
+@app.route("/post/<int:post_id>", methods=["GET", "POST"])
 def show_post(post_id):
+    form = CommentForm()
     requested_post = db.get_or_404(BlogPost, post_id)
-    return render_template("post.html", post=requested_post)
+    if form.validate_on_submit():
+        if not current_user.is_authenticated:
+            flash("Please log in to add a comment.")
+            return redirect(url_for("login"))
+        comment = form.comments.data
+        new_comment = Comment(
+            text=comment,
+            comment_author=current_user,
+            parent_post=requested_post
+        )
+        db.session.add(new_comment)
+        db.session.commit()
+        return redirect(url_for("show_post", post_id=post_id))
+    return render_template("post.html", post=requested_post, form=form, gravatar=gravatar)
 
 
 # TODO: Use a decorator so only an admin user can create a new post

@@ -28,4 +28,8 @@ class LoginForm(FlaskForm):
 
 # TODO: Create a CommentForm so users can leave comments below posts
 class CommentForm(FlaskForm):
-    pass
+    comments=CKEditorField(
+        label="Add a comment",
+        validators=[DataRequired()],
+    )
+    submit = SubmitField(label="Submit Comment")
