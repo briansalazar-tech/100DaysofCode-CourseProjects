@@ -13,20 +13,19 @@ class CreatePostForm(FlaskForm):
     submit = SubmitField("Submit Post")
 
 
-# TODO: Create a RegisterForm to register new users
 class RegisterForm(FlaskForm):
     email = EmailField(label="Email", validators=[DataRequired()])
     password = PasswordField(label="Password", validators=[DataRequired()])
     name = StringField(label="Name", validators=[DataRequired()])
     submit = SubmitField(label="Sign Me Up!")
 
-# TODO: Create a LoginForm to login existing users
+
 class LoginForm(FlaskForm):
     email = EmailField(label="Email", validators=[DataRequired()])
     password = PasswordField(label="Password", validators=[DataRequired()])
     submit = SubmitField(label="Let Me In!")
 
-# TODO: Create a CommentForm so users can leave comments below posts
+
 class CommentForm(FlaskForm):
     comments=CKEditorField(
         label="Add a comment",
