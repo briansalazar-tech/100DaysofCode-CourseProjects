@@ -245,7 +245,6 @@ def edit_post(post_id):
     return render_template("make-post.html", form=edit_form, is_edit=True)
 
 
-
 @app.route("/delete/<int:post_id>")
 @admin_required
 def delete_post(post_id):
