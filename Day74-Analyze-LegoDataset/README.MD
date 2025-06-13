@@ -1,4 +1,4 @@
-# Day 73: Aggregate and Merge Lego Dataset Data
+# Day 74: Aggregate and Merge Lego Dataset Data
 ![Lego Bricks](assets/bricks.jpg)
 ## Lesson Overview
 **Day 74** continues the data science portion of the course. The lesson provides a deep dive into a LEGO dataset. In the days lesson the following questions are answered:
