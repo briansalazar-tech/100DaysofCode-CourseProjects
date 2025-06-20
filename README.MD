@@ -11,6 +11,7 @@ Why upload the daily projects and retake this course? For me, I had the followin
 For anyone interested in the course, the course can be found on [uDemy](https://www.udemy.com/course/100-days-of-code/).
 ## Course Sections
 ![Course breakdown](Images/CourseBreakdown.png)
+
 The course begins assuming someone taking the course has zero experience working with Python. At a high level, the sections of the course are broken down into **beginner**, **intermediate**, **intermediate+**, **advanced**, and **professional**. Of the levels listed, the professional projects are not in this repo as they are the portfolio projects created in days 81-100.
 
 The projects can also be broken down into the following sections.
